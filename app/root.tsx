@@ -1,7 +1,12 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router";
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import type { LinksFunction } from "react-router";
 import { useStore } from "~/store/useStore";
-import "~/styles/index.css";
+import indexCss from "~/styles/index.css?url";
+
+export const links: LinksFunction = () => [
+	{ rel: "stylesheet", href: indexCss },
+];
 
 function Root() {
 	const { loadFromLocalStorage } = useStore();
@@ -25,9 +30,19 @@ function Root() {
 	}, []);
 
 	return (
-		<>
-			<Outlet />
-		</>
+		<html lang="en">
+			<head>
+				<meta charSet="utf-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<Meta />
+				<Links />
+			</head>
+			<body>
+				<Outlet />
+				<ScrollRestoration />
+				<Scripts />
+			</body>
+		</html>
 	);
 }
 
