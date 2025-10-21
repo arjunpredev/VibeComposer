@@ -1,22 +1,36 @@
-# Vibe Composer
+## 🎓 Built with pre.dev
 
-A Vite-powered web app that combines [Strudel](https://strudel.cc/) (live coding music environment) with Claude Haiku 4.5 AI for collaborative music creation.
+This project was built using [**pre.dev**](https://pre.dev), an AI Solutions Architect.
 
-## Features
+<div align="center">
+  <a href="https://pre.dev">
+    <img src="https://pre.dev/predev_logo_name.png" alt="pre.dev logo" width="300">
+  </a>
+</div>
 
-- **Split Interface**: Strudel REPL on the left, AI chat on the right
-- **AI-Powered Code Generation**: Claude Haiku 4.5 generates Strudel code based on your prompts
-- **One-Click Apply**: Apply AI-generated code directly to the Strudel REPL
-- **Persistent Storage**: API key and chat history stored in localStorage
-- **Terminal Aesthetic**: Clean black/white theme with monospace font
-- **Streaming Responses**: Real-time AI response streaming
+# 🎵 Vibe Composer
 
-## Getting Started
+**Create music with AI in real-time.** Combine the power of [Strudel](https://strudel.cc/) (live coding music environment) with advanced AI for collaborative, instant music generation.
+
+<div align="center">
+  <img src="./public/vibe-composer.png" alt="Vibe Composer Interface" width="100%" style="border-radius: 8px; margin: 20px 0;">
+</div>
+
+## ✨ Features
+
+- 🎹 **Split Interface** — Strudel REPL on the left, AI chat on the right
+- 🤖 **AI-Powered Code Generation** — AI generates Strudel code from your prompts
+- ⚡ **One-Click Apply** — Apply AI-generated code directly to the REPL
+- 💾 **Persistent Storage** — Your API key and chat history stay in your browser
+- 🎨 **Terminal Aesthetic** — Clean, minimal black/white theme with monospace typography
+- 🚀 **Real-Time Streaming** — Watch AI responses appear live
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js (v18+)
-- An Anthropic API key ([Get one here](https://console.anthropic.com/))
+- **Node.js** v18 or higher
+- **Anthropic API Key** — [Get one free](https://console.anthropic.com/)
 
 ### Installation
 
@@ -24,40 +38,71 @@ A Vite-powered web app that combines [Strudel](https://strudel.cc/) (live coding
 npm install
 ```
 
-### Development
+### Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open your browser to [http://localhost:5173](http://localhost:5173)
 
-### Build for Production
+### Production Build
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Usage
+## 📖 How to Use
 
-1. **Enter API Key**: Input your Anthropic API key in the top section
-2. **Chat with AI**: Ask for Strudel code in the chat interface (e.g., "Create a drum pattern in C minor")
-3. **Apply Code**: Click the "Apply to Strudel" button on any AI response
-4. **Play Music**: Hit play or Ctrl+Enter in the Strudel REPL to hear your composition
+1. **Add Your API Key** — Paste your Anthropic API key at the top of the app
+2. **Chat with AI** — Describe the music you want (e.g., *"Create a drum pattern in C minor"*)
+3. **Apply Code** — Click *"Apply to Strudel"* to load the generated code
+4. **Play** — Press play or Ctrl+Enter in the Strudel REPL to hear your creation
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Vite, React, TypeScript
-- **Styling**: Tailwind CSS v4
-- **State Management**: Zustand
-- **AI**: Anthropic Claude Haiku 4.5
-- **Music**: Strudel (embedded via CDN)
+| Layer | Technology |
+|-------|-----------|
+| **Build** | Vite + React 19 |
+| **Language** | TypeScript |
+| **Styling** | Tailwind CSS v4 |
+| **State** | Zustand |
+| **AI** | Advanced LLM (Anthropic API) |
+| **Music** | Strudel (CDN) |
+| **UI Components** | Radix UI |
 
-## Security Note
+## 🔒 Security
 
-Your API key is stored locally in your browser's localStorage and never sent to any server except Anthropic's API directly from your browser.
+Your API key is stored **only in your browser's localStorage** and is never sent anywhere except directly to Anthropic's API. No server, no tracking—just you and your music.
 
-## License
+## 📜 License
 
-MIT
+This project is licensed under the **GNU Affero General Public License v3.0** (AGPL-3.0).
+
+### Third-Party Licenses
+
+- **[Strudel](https://strudel.cc/)** — AGPL-3.0
+  - Strudel is a live coding music environment that powers the REPL in this application.
+  - The Strudel REPL runs as an embedded iframe from `strudel.cc` and is not bundled with this project.
+
+### License Summary
+
+Under AGPL-3.0, you are free to:
+- ✅ Use, modify, and distribute this software
+- ✅ Use it for any purpose (commercial or otherwise)
+
+**With the following obligations:**
+- 📋 Provide a copy of this license with any distribution
+- 🔄 Disclose all modifications and when they were made
+- 🔗 Distribute source code along with any web-based application
+- 🏷️ License derivative works under the same AGPL-3.0 license
+
+For the complete license text, see [LICENSE](./LICENSE) or visit [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.html).
+
+## 🎵 Built with
+
+- [Strudel](https://strudel.cc/) — Live coding music environment
+- [React](https://react.dev/) — UI library
+- [Anthropic Claude](https://www.anthropic.com/) — AI model
+

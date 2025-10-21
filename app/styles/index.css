@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@layer base {
+	:root {
+		color-scheme: dark;
+	}
+
+	html.light {
+		color-scheme: light;
+	}
+
+	body {
+		@apply antialiased;
+	}
+}
+
+@layer components {
+	.strudel-repl {
+		@apply h-full w-full overflow-auto;
+	}
+
+	.chat-container {
+		@apply flex flex-col h-full;
+	}
+
+	.chat-messages {
+		@apply flex-1 overflow-y-auto;
+	}
+
+	.chat-input-wrapper {
+		@apply border-t border-gray-800 p-4;
+	}
+}
+
+@layer utilities {
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+}

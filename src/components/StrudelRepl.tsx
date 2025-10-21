@@ -7,8 +7,31 @@ export function StrudelRepl() {
 
 	useEffect(() => {
 		if (replContainerRef.current) {
-			// Clear and rebuild the strudel-repl element
-			replContainerRef.current.innerHTML = `<strudel-repl><!--\n${currentStrudelCode}\n--></strudel-repl>`;
+			// Remove the old <strudel-repl> if it exists
+			const prev = replContainerRef.current.querySelector("strudel-repl");
+			if (prev) {
+				replContainerRef.current.removeChild(prev);
+			}
+
+			// Create a new <strudel-repl> element
+			const strudelEl = document.createElement("strudel-repl");
+
+			// Set the code using comment node to support Strudel's embed expectations
+			strudelEl.appendChild(
+				document.createComment(`\n${currentStrudelCode}\n`)
+			);
+
+			replContainerRef.current.appendChild(strudelEl);
+
+			// Style any iframe inside the <strudel-repl> after a short delay (to ensure it exists)
+			setTimeout(() => {
+				const iframe = strudelEl.querySelector("iframe");
+				if (iframe) {
+					iframe.style.width = "100%";
+					iframe.style.height = "100%";
+					iframe.style.border = "none";
+				}
+			}, 100);
 		}
 	}, [currentStrudelCode]);
 

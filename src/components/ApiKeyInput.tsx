@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../store/useStore";
 
 export function ApiKeyInput() {
 	const { apiKey, setApiKey, clearApiKey } = useStore();
 	const [inputValue, setInputValue] = useState("");
-	const [isEditing, setIsEditing] = useState(!apiKey);
+	const [isEditing, setIsEditing] = useState(false);
+
+	// Sync isEditing state when apiKey loads from localStorage
+	useEffect(() => {
+		setIsEditing(!apiKey);
+	}, [apiKey]);
 
 	function handleSave() {
 		if (inputValue.trim()) {
@@ -14,16 +19,17 @@ export function ApiKeyInput() {
 		}
 	}
 
-	function handleEdit() {
+	// Update isEditing when apiKey changes (e.g., after loadFromLocalStorage)
+	const handleEdit = () => {
 		setIsEditing(true);
 		setInputValue("");
-	}
+	};
 
-	function handleRemove() {
+	const handleRemove = () => {
 		clearApiKey();
 		setIsEditing(true);
 		setInputValue("");
-	}
+	};
 
 	if (!isEditing && apiKey) {
 		return (
