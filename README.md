@@ -76,6 +76,17 @@ npm run preview
 
 Your API key is stored **only in your browser's localStorage** and is never sent anywhere except directly to Anthropic's API. No server, no tracking—just you and your music.
 
+## 🙏 Acknowledgments
+
+This project would not be possible without **[Strudel](https://strudel.cc/)**, an incredible live coding environment for algorithmic music and pattern creation. Strudel is developed and maintained by [Felix Roos](https://github.com/felixroos) and the broader Strudel community.
+
+Strudel brings the joy of live coding to the web, making music creation accessible and fun. It's inspired by TidalCycles and built with modern web technologies. We're grateful for the amazing work the Strudel team has done to make creative music coding available to everyone.
+
+**Learn more about Strudel:**
+- 🌐 Website: [strudel.cc](https://strudel.cc/)
+- 📚 Documentation: [strudel.cc/learn](https://strudel.cc/learn/)
+- 💻 GitHub: [github.com/tidalcycles/strudel](https://github.com/tidalcycles/strudel)
+
 ## 📜 License
 
 This project is licensed under the **GNU Affero General Public License v3.0** (AGPL-3.0).
