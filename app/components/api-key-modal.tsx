@@ -87,7 +87,7 @@ export function ApiKeyModal() {
 
 	return (
 		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-			<div className="bg-black border border-white/20 p-6 rounded-lg w-full max-w-2xl mx-4 space-y-4 max-h-[90vh] overflow-y-auto">
+			<div className="bg-black border border-white/20 p-6 rounded-lg w-full max-w-2xl mx-4 space-y-4 max-h-[90vh] overflow-y-auto relative">
 				<img
 					src="/vibe-composer.png"
 					alt="Vibe Composer"
@@ -177,7 +177,7 @@ export function ApiKeyModal() {
 					</button>
 				</div>
 
-				<p className="text-xs text-white/50 text-center">
+				<p className="text-xs text-white/50 text-center pb-4">
 					Don't trust us?{" "}
 					<a
 						href="https://github.com/arjunpredev/VibeComposer"
@@ -188,6 +188,21 @@ export function ApiKeyModal() {
 						Fork it yourself on GitHub
 					</a>
 				</p>
+
+				<a
+					href="https://pre.dev"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="absolute bottom-4 left-6 flex items-center gap-2 text-xs text-white/60 hover:text-white/80 transition-colors"
+				>
+					<span>built with</span>
+					<img
+						src="https://pre.dev/predev.png"
+						alt="pre.dev"
+						className="h-3.5 opacity-60 hover:opacity-80 transition-opacity"
+					/>
+					<span>pre.dev</span>
+				</a>
 			</div>
 		</div>
 	);

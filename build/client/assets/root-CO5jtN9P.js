@@ -1,1 +1,0 @@
-import{w as s,u as e,a as r,j as t,O as a}from"./useStore-D4vtJXpj.js";function n(){const{loadFromLocalStorage:o}=e();return r.useEffect(()=>{o()},[o]),t.jsx(t.Fragment,{children:t.jsx(a,{})})}const c=s(n);export{c as default};
