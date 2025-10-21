@@ -64,13 +64,13 @@ npm run preview
 
 | Layer | Technology |
 |-------|-----------|
-| **Build** | Vite + React 19 |
+| **Framework** | React Router 7 |
 | **Language** | TypeScript |
+| **UI Library** | React 19 |
 | **Styling** | Tailwind CSS v4 |
 | **State** | Zustand |
-| **AI** | Advanced LLM (Anthropic API) |
+| **AI** | Anthropic Claude API |
 | **Music** | Strudel (CDN) |
-| **UI Components** | Radix UI |
 
 ## 🔒 Security
 
