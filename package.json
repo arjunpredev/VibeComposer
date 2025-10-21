@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "react-router dev",
 		"build": "react-router build",
-		"start": "react-router-serve ./build/client",
+		"start": "serve ./build/client -s -p 4173",
 		"typecheck": "tsc",
 		"lint": "eslint ."
 	},
@@ -16,6 +16,7 @@
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"react-router": "^7.9.4",
+		"serve": "^14.2.4",
 		"zustand": "^5.0.8"
 	},
 	"devDependencies": {
