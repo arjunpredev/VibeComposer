@@ -1,6 +1,15 @@
 import { useEffect, useRef } from "react";
 import { useStore } from "~/store/useStore";
 
+function styleIframe(strudelEl: HTMLElement) {
+	const iframe = strudelEl.querySelector("iframe") as HTMLIFrameElement | null;
+	if (iframe) {
+		iframe.style.width = "100%";
+		iframe.style.height = "100%";
+		iframe.style.border = "none";
+	}
+}
+
 export function StrudelRepl() {
 	const { currentStrudelCode } = useStore();
 	const replContainerRef = useRef<HTMLDivElement>(null);
@@ -23,15 +32,35 @@ export function StrudelRepl() {
 
 			replContainerRef.current.appendChild(strudelEl);
 
-			// Style any iframe inside the <strudel-repl> after a short delay (to ensure it exists)
-			setTimeout(() => {
-				const iframe = strudelEl.querySelector("iframe");
-				if (iframe) {
-					iframe.style.width = "100%";
-					iframe.style.height = "100%";
-					iframe.style.border = "none";
-				}
+			// Immediate attempt to style (in case iframe is ready immediately)
+			styleIframe(strudelEl);
+
+			// First retry after short delay
+			const timeout1 = setTimeout(() => {
+				styleIframe(strudelEl);
 			}, 100);
+
+			// Second retry after longer delay as fallback
+			const timeout2 = setTimeout(() => {
+				styleIframe(strudelEl);
+			}, 300);
+
+			// Set up mutation observer to ensure styles persist
+			const observer = new MutationObserver(() => {
+				styleIframe(strudelEl);
+			});
+
+			observer.observe(strudelEl, {
+				attributes: true,
+				subtree: true,
+				attributeFilter: ["width", "height", "style"],
+			});
+
+			return () => {
+				clearTimeout(timeout1);
+				clearTimeout(timeout2);
+				observer.disconnect();
+			};
 		}
 	}, [currentStrudelCode]);
 
