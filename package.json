@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "react-router dev",
-		"build": "react-router build",
+		"build": "react-router build && node inject-meta-tags.js",
 		"start": "serve ./build/client -s -p 4173",
 		"typecheck": "tsc",
 		"lint": "eslint ."
