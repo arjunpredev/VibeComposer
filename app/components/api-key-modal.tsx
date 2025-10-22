@@ -3,28 +3,33 @@ import { useStore } from "~/store/useStore";
 import Anthropic from "@anthropic-ai/sdk";
 
 export function ApiKeyModal() {
-	const { apiKey, setApiKey, clearApiKey } = useStore();
+	const {
+		apiKey,
+		setApiKey,
+		clearApiKey,
+		isApiKeyModalOpen,
+		setApiKeyModalOpen,
+		apiKeyModalWarning,
+		setApiKeyModalWarning,
+	} = useStore();
 	const [inputValue, setInputValue] = useState("");
 	const [isValidating, setIsValidating] = useState(false);
 	const [error, setError] = useState("");
-	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
 		if (!apiKey) {
-			setIsOpen(true);
-		} else {
-			setIsOpen(false);
+			setApiKeyModalOpen(true);
 		}
-	}, [apiKey]);
+	}, [apiKey, setApiKeyModalOpen]);
 
 	useEffect(() => {
 		function handleOpenModal() {
-			setIsOpen(true);
+			setApiKeyModalOpen(true);
 		}
 
 		window.addEventListener("openApiKeyModal", handleOpenModal);
 		return () => window.removeEventListener("openApiKeyModal", handleOpenModal);
-	}, []);
+	}, [setApiKeyModalOpen]);
 
 	async function validateApiKey(key: string): Promise<boolean> {
 		try {
@@ -65,7 +70,8 @@ export function ApiKeyModal() {
 		if (isValid) {
 			setApiKey(inputValue.trim());
 			setInputValue("");
-			setIsOpen(false);
+			setApiKeyModalOpen(false);
+			setApiKeyModalWarning(null);
 		}
 	}
 
@@ -75,19 +81,46 @@ export function ApiKeyModal() {
 		setError("");
 	}
 
+	function handleClose() {
+		setApiKeyModalOpen(false);
+	}
+
 	function handleKeyDown(e: React.KeyboardEvent) {
 		if (e.key === "Enter" && !isValidating && inputValue.trim()) {
 			handleSave();
-		} else if (e.key === "Escape" && apiKey) {
-			setIsOpen(false);
+		} else if (e.key === "Escape") {
+			if (apiKey) {
+				handleClose();
+			}
 		}
 	}
 
-	if (!isOpen) return null;
+	if (!isApiKeyModalOpen) return null;
 
 	return (
 		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 			<div className="bg-black border border-white/20 p-6 rounded-lg w-full max-w-2xl mx-4 space-y-4 max-h-[90vh] overflow-y-auto relative">
+				{!apiKey && (
+					<button
+						onClick={handleClose}
+						className="absolute top-4 right-4 p-1 hover:bg-white/10 rounded transition-colors text-white/60 hover:text-white"
+						aria-label="Close modal"
+					>
+						<svg
+							className="w-5 h-5"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</button>
+				)}
 				<img
 					src="/vibe-composer.png"
 					alt="Vibe Composer"
@@ -153,6 +186,12 @@ export function ApiKeyModal() {
 					</div>
 				)}
 
+				{apiKeyModalWarning && (
+					<div className="p-3 bg-yellow-600/20 border border-yellow-600/50 rounded text-sm text-yellow-400 max-h-48 overflow-y-auto break-words">
+						{apiKeyModalWarning}
+					</div>
+				)}
+
 				<p className="text-xs text-white/50">
 					Your API key is stored locally in your browser and never sent to our
 					servers.
@@ -161,20 +200,22 @@ export function ApiKeyModal() {
 				<div className="flex gap-2 justify-end">
 					{apiKey && (
 						<button
-							onClick={() => setIsOpen(false)}
+							onClick={handleClose}
 							className="px-4 py-2 text-sm border border-white/20 hover:bg-white/10 transition-colors rounded"
 							disabled={isValidating}
 						>
 							Cancel
 						</button>
 					)}
-					<button
-						onClick={handleSave}
-						disabled={!inputValue.trim() || isValidating}
-						className="px-4 py-2 text-sm bg-white text-black hover:bg-white/90 disabled:bg-white/20 disabled:text-white/50 disabled:cursor-not-allowed transition-colors rounded"
-					>
-						{isValidating ? "Validating..." : "Save"}
-					</button>
+					{!apiKey && (
+						<button
+							onClick={handleSave}
+							disabled={!inputValue.trim() || isValidating}
+							className="px-4 py-2 text-sm bg-white text-black hover:bg-white/90 disabled:bg-white/20 disabled:text-white/50 disabled:cursor-not-allowed transition-colors rounded"
+						>
+							{isValidating ? "Validating..." : "Save"}
+						</button>
+					)}
 				</div>
 
 				<p className="text-xs text-white/50 text-center pb-4">

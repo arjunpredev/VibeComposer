@@ -28,6 +28,8 @@ interface AppState {
 	streamingContent: string;
 	showingExamples: boolean;
 	currentExampleIndex: number;
+	isApiKeyModalOpen: boolean;
+	apiKeyModalWarning: string | null;
 	setApiKey: (key: string) => void;
 	clearApiKey: () => void;
 	createChat: (name?: string) => void;
@@ -43,6 +45,8 @@ interface AppState {
 	setStreamingContent: (content: string) => void;
 	setShowingExamples: (showing: boolean) => void;
 	setCurrentExampleIndex: (index: number) => void;
+	setApiKeyModalOpen: (isOpen: boolean) => void;
+	setApiKeyModalWarning: (warning: string | null) => void;
 	loadFromLocalStorage: () => void;
 	getCurrentChatMessages: () => Message[];
 }
@@ -103,6 +107,8 @@ export const useStore = create<AppState>((set, get) => ({
 	streamingContent: "",
 	showingExamples: false,
 	currentExampleIndex: 0,
+	isApiKeyModalOpen: false,
+	apiKeyModalWarning: null,
 
 	setApiKey: (key: string) => {
 		localStorage.setItem(STORAGE_KEY_API, key);
@@ -232,6 +238,14 @@ export const useStore = create<AppState>((set, get) => ({
 
 	setCurrentExampleIndex: (index: number) => {
 		set({ currentExampleIndex: index });
+	},
+
+	setApiKeyModalOpen: (isOpen: boolean) => {
+		set({ isApiKeyModalOpen: isOpen });
+	},
+
+	setApiKeyModalWarning: (warning: string | null) => {
+		set({ apiKeyModalWarning: warning });
 	},
 
 	loadFromLocalStorage: () => {
