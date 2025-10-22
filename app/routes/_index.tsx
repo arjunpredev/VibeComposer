@@ -3,6 +3,7 @@ import { useStore } from "~/store/useStore";
 import { AppHeader } from "~/components/app-header";
 import { DesktopLayout } from "~/components/desktop-layout";
 import { MobileLayout } from "~/components/mobile-layout";
+import { MobileTabNavigation } from "~/components/mobile-tab-navigation";
 import { Footer } from "~/components/footer";
 import { ApiKeyModal } from "~/components/api-key-modal";
 
@@ -21,9 +22,16 @@ export default function Index() {
 	return (
 		<div className="h-screen w-screen flex flex-col bg-black text-white font-mono overflow-hidden">
 			<AppHeader onHeaderClick={handleHeaderClick} />
-			<DesktopLayout />
-			<MobileLayout activeTab={activeTab} onTabChange={setActiveTab} />
-			<Footer />
+			<div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+				<DesktopLayout />
+				<MobileLayout activeTab={activeTab} onTabChange={setActiveTab} />
+			</div>
+			<div className="hidden md:block flex-shrink-0">
+				<Footer />
+			</div>
+			<div className="md:hidden flex-shrink-0">
+				<MobileTabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+			</div>
 			<ApiKeyModal />
 		</div>
 	);
