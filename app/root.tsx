@@ -32,6 +32,10 @@ export const meta: MetaFunction = () => {
 		},
 		{ property: "og:type", content: "website" },
 		{ property: "og:image", content: "https://vibecomposer.studio/vibe.png" },
+		{
+			property: "og:logo",
+			content: "https://vibecomposer.studio/vibe-composer.png",
+		},
 		{ property: "og:url", content: "https://vibecomposer.studio" },
 		{
 			property: "og:description",
