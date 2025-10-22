@@ -1,11 +1,45 @@
 export interface StrudelExample {
 	name: string;
 	code: string;
+	by?: string;
 }
 
 export const STRUDEL_EXAMPLES: StrudelExample[] = [
 	{
+		name: "dante as synth",
+		by: "Arjun Raj Jain",
+		code: `// dante as synth - Originally Vibe Composed by @ArjunRajJain
+
+setcps(0.5)
+stack(
+  
+  s("hh*4").gain(sine.range(.2,.4))
+  .delay(.2).delaytime(.16).delayfeedback(.3),
+  
+  s("cp(3,8,[0.5 0.7])").gain(.5).room(.4)
+  .sometimes(fast(2)),
+  
+  note("a2 [~ d2] g2 [~ e2]")
+  .s("sine")
+  .gain(.6)
+  .cutoff(300)
+  .shape(.1)
+  .attack(.1),
+  
+  note("a4,c5 [~ d5,f5] g4,b4 [~ e5,g5]")
+  .s("square")
+  .lpf(400)
+  .attack(.2)
+  .sustain(.1)
+  .gain(.15)
+  .room(.8)
+  .slow(8)
+  .echo(4,.16,.4),
+)`,
+	},
+	{
 		name: "Amensister",
+		by: "Felix Roos",
 		code: `// "Amensister"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -46,6 +80,7 @@ stack(
 	},
 	{
 		name: "Arpoon",
+		by: "Felix Roos",
 		code: `// "Arpoon"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -75,6 +110,7 @@ n("[0,3] 2 [1,3] 2".fast(3).lastOf(4, fast(2))).clip(2)
 	},
 	{
 		name: "barryHarris",
+		by: "Unknown",
 		code: `// adapted from a Barry Harris exercise
 "0,2,[7 6]"
   .add("<0 1 2 3 4 5 7 8>")
@@ -86,6 +122,7 @@ n("[0,3] 2 [1,3] 2".fast(3).lastOf(4, fast(2))).clip(2)
 	},
 	{
 		name: "Bass fuge",
+		by: "Felix Roos",
 		code: `// "Bass fuge"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -118,6 +155,7 @@ x=>x.add(7)
 	},
 	{
 		name: "Belldub",
+		by: "Felix Roos",
 		code: `// "Belldub"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -157,6 +195,7 @@ stack(
 	},
 	{
 		name: "Blippy Rhodes",
+		by: "Felix Roos",
 		code: `// "Blippy Rhodes"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -202,6 +241,7 @@ stack(
 	},
 	{
 		name: "Caverave",
+		by: "Felix Roos",
 		code: `// "Caverave"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -248,6 +288,7 @@ stack(
 	},
 	{
 		name: "Chop",
+		by: "Felix Roos",
 		code: `// "Chop"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -264,6 +305,7 @@ s("p")
 	},
 	{
 		name: "Delay",
+		by: "Felix Roos",
 		code: `// "Delay"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -277,6 +319,7 @@ stack(
 	},
 	{
 		name: "Dinofunk",
+		by: "Felix Roos",
 		code: `// "Dinofunk"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -308,6 +351,7 @@ note("<b4 eb4>").s('dino').delay(.8).slow(8).room(.5)
 	},
 	{
 		name: "Echo piano",
+		by: "Felix Roos",
 		code: `// "Echo piano"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -323,6 +367,7 @@ n("<0 2 [4 6](3,4,2) 3*2>").color('salmon')
 	},
 	{
 		name: "Festival of fingers",
+		by: "Felix Roos",
 		code: `// "Festival of fingers"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -345,6 +390,7 @@ stack(
 	},
 	{
 		name: "Festival of fingers 3",
+		by: "Felix Roos",
 		code: `// "Festival of fingers 3"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -371,6 +417,7 @@ n("[-7*3],0,2,6,[8 7]")
 	},
 	{
 		name: "Flatrave",
+		by: "Felix Roos",
 		code: `// "Flatrave"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -399,6 +446,7 @@ stack(
 	},
 	{
 		name: "giantSteps",
+		by: "John Coltrane",
 		code: `// John Coltrane - Giant Steps
 
 let melody = seq(
@@ -432,6 +480,7 @@ stack(
 	},
 	{
 		name: "Good times",
+		by: "Felix Roos",
 		code: `// "Good times"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -456,6 +505,7 @@ stack(
 	},
 	{
 		name: "Holy flute",
+		by: "Felix Roos",
 		code: `// "Holy flute"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -472,6 +522,7 @@ stack(
 	},
 	{
 		name: "Jux und tollerei",
+		by: "Felix Roos",
 		code: `// "Jux und tollerei"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -489,6 +540,7 @@ note("c3 eb3 g3 bb3").palindrome()
 	},
 	{
 		name: "Lounge sponge",
+		by: "Felix Roos",
 		code: `// "Lounge sponge"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos, livecode.orc by Steven Yi
@@ -511,6 +563,7 @@ stack(
 	},
 	{
 		name: "Melting submarine",
+		by: "Felix Roos",
 		code: `// "Melting submarine"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -555,6 +608,7 @@ stack(
 	},
 	{
 		name: "Orbit",
+		by: "Felix Roos",
 		code: `// "Orbit"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -573,6 +627,7 @@ stack(
 	},
 	{
 		name: "Random bells",
+		by: "Felix Roos",
 		code: `// "Random bells"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -598,6 +653,7 @@ stack(
 	},
 	{
 		name: "Sample demo",
+		by: "Felix Roos",
 		code: `// "Sample demo"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -618,6 +674,7 @@ stack(
 	},
 	{
 		name: "swimming",
+		by: "Koji Kondo",
 		code: `// Koji Kondo - Swimming (Super Mario World)
 stack(
   seq(
@@ -682,6 +739,7 @@ stack(
 	},
 	{
 		name: "Underground plumber",
+		by: "Felix Roos",
 		code: `// "Underground plumber"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -712,6 +770,7 @@ stack(
 	},
 	{
 		name: "Waa2",
+		by: "Felix Roos",
 		code: `// "Waa2"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -732,6 +791,7 @@ note(
 	},
 	{
 		name: "Wavy kalimba",
+		by: "Felix Roos",
 		code: `// "Wavy kalimba"
 // @license CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
 // @by Felix Roos
@@ -766,6 +826,7 @@ stack(
 	},
 	{
 		name: "zeldasRescue",
+		by: "Koji Kondo",
 		code: `// Koji Kondo - Princess Zelda's Rescue
 stack(
   // melody

@@ -87,7 +87,7 @@ Strudel brings the joy of live coding to the web, making music creation accessib
 **Learn more about Strudel:**
 - 🌐 Website: [strudel.cc](https://strudel.cc/)
 - 📚 Documentation: [strudel.cc/learn](https://strudel.cc/learn/)
-- 💻 GitHub: [github.com/tidalcycles/strudel](https://github.com/tidalcycles/strudel)
+- 💻 Codeberg: [codeberg.org/uzu/strudel](https://codeberg.org/uzu/strudel)
 
 ## 📜 License
 

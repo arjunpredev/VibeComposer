@@ -43,7 +43,14 @@ export function ExamplesModal({ isOpen, onClose }: ExamplesModalProps) {
 										: "bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20"
 								}`}
 							>
-								{example.name}
+								<div className="flex items-baseline justify-between gap-2">
+									<span className="font-medium">{example.name}</span>
+									{example.by && (
+										<span className="text-xs text-white/40">
+											by {example.by}
+										</span>
+									)}
+								</div>
 							</button>
 						))}
 					</div>
