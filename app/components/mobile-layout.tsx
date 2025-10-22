@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { StrudelRepl } from "./StrudelRepl";
 import { Chat } from "./Chat";
 import { ApiKeyButton } from "./api-key-button";
 import { MobileTabNavigation } from "./mobile-tab-navigation";
 import { TroubleHearingModal } from "./trouble-hearing-modal";
 import { ExamplesModal } from "./examples-modal";
-import { useState } from "react";
+import { ChatsSidebar } from "./chats-sidebar";
 
 interface MobileLayoutProps {
 	activeTab: "repl" | "chat";
@@ -14,6 +15,7 @@ interface MobileLayoutProps {
 export function MobileLayout({ activeTab, onTabChange }: MobileLayoutProps) {
 	const [showTroubleHearingModal, setShowTroubleHearingModal] = useState(false);
 	const [showExamplesModal, setShowExamplesModal] = useState(false);
+	const [showChatsModal, setShowChatsModal] = useState(false);
 
 	return (
 		<div className="md:hidden flex flex-col flex-1 min-h-0">
@@ -56,11 +58,48 @@ export function MobileLayout({ activeTab, onTabChange }: MobileLayoutProps) {
 							<ApiKeyButton />
 						</div>
 						<div className="flex-1 min-h-0 overflow-hidden">
-							<Chat />
+							<Chat onViewChats={() => setShowChatsModal(true)} />
 						</div>
 					</div>
 				)}
 			</div>
+
+			{showChatsModal && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+					<div className="bg-black border border-white/20 rounded-lg w-[90vw] h-[90vh] overflow-hidden flex flex-col">
+						<div className="flex items-center justify-between px-4 py-3 border-b border-white/20 flex-shrink-0">
+							<span className="text-sm font-semibold text-white uppercase">
+								Chats
+							</span>
+							<button
+								onClick={() => setShowChatsModal(false)}
+								className="p-1 hover:bg-white/10 rounded transition-colors"
+								title="Close"
+							>
+								<svg
+									className="w-5 h-5 text-white/60"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M6 18L18 6M6 6l12 12"
+									/>
+								</svg>
+							</button>
+						</div>
+						<ChatsSidebar
+							isOpen={true}
+							isModal={true}
+							onClose={() => setShowChatsModal(false)}
+							onChatSelect={() => setShowChatsModal(false)}
+						/>
+					</div>
+				</div>
+			)}
 
 			<MobileTabNavigation activeTab={activeTab} onTabChange={onTabChange} />
 			<TroubleHearingModal

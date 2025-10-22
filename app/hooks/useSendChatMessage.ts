@@ -7,7 +7,7 @@ import { cleanStrudelCode, trackEvent } from "~/utils/strudel-utils";
 export function useSendChatMessage() {
 	const {
 		apiKey,
-		messages,
+		getCurrentChatMessages,
 		addMessage,
 		updateStrudelCode,
 		setIsStreaming,
@@ -41,6 +41,7 @@ export function useSendChatMessage() {
 					dangerouslyAllowBrowser: true,
 				});
 
+				const messages = getCurrentChatMessages();
 				const stream = await anthropic.messages.stream({
 					model: "claude-haiku-4-5",
 					max_tokens: 1024,
@@ -115,12 +116,12 @@ export function useSendChatMessage() {
 		},
 		[
 			apiKey,
-			messages,
 			addMessage,
 			updateStrudelCode,
 			setIsStreaming,
 			setStreamingContent,
 			setActiveTab,
+			getCurrentChatMessages,
 		]
 	);
 

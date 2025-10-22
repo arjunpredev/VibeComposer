@@ -14,9 +14,14 @@ function formatTokens(tokens: number | undefined): string {
 }
 
 export function ChatMessage({ timestamp }: ChatMessageProps) {
-	const { messages, currentStrudelCode, updateStrudelCode, setActiveTab } =
-		useStore();
+	const {
+		getCurrentChatMessages,
+		currentStrudelCode,
+		updateStrudelCode,
+		setActiveTab,
+	} = useStore();
 
+	const messages = getCurrentChatMessages();
 	const message = messages.find((m) => m.timestamp === timestamp);
 	if (!message) return null;
 

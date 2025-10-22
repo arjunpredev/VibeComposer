@@ -5,10 +5,11 @@ import { ChatMessage } from "./chat-message";
 import { SuggestionsPanel } from "./suggestions-panel";
 
 export function MessageList() {
-	const { messages, streamingContent, showingExamples, setShowingExamples } =
+	const { getCurrentChatMessages, streamingContent, showingExamples, setShowingExamples } =
 		useStore();
 	const { sendMessage } = useSendChatMessage();
 	const messagesEndRef = useRef<HTMLDivElement>(null);
+	const messages = getCurrentChatMessages();
 
 	useEffect(() => {
 		const showingSuggestionsOnly =
