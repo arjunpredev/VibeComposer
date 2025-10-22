@@ -31,8 +31,8 @@ export const meta: MetaFunction = () => {
 			content: "Vibe Composer | Live Coding Meets Vibe Coding",
 		},
 		{ property: "og:type", content: "website" },
-		{ property: "og:image", content: "https://vibecomposer.com/vibe.png" },
-		{ property: "og:url", content: "https://vibecomposer.com" },
+		{ property: "og:image", content: "https://vibecomposer.studio/vibe.png" },
+		{ property: "og:url", content: "https://vibecomposer.studio" },
 		{
 			property: "og:description",
 			content:
@@ -53,7 +53,7 @@ export const meta: MetaFunction = () => {
 			content:
 				"Code your beats. Compose with AI. Live Coding meets Vibe Coding. Transform musical ideas into reality.",
 		},
-		{ name: "twitter:image", content: "https://vibecomposer.com/vibe.png" },
+		{ name: "twitter:image", content: "https://vibecomposer.studio/vibe.png" },
 		{
 			name: "twitter:image:alt",
 			content:
