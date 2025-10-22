@@ -78,9 +78,11 @@ Your API key is stored **only in your browser's localStorage** and is never sent
 
 ## 🙏 Acknowledgments
 
-This project would not be possible without **[Strudel](https://strudel.cc/)**, an incredible live coding environment for algorithmic music and pattern creation. Strudel is developed and maintained by [Felix Roos](https://github.com/felixroos) and the broader Strudel community.
+This project was inspired by **[TidalCycles](https://tidalcycles.org/)**, a live coding language for algorithmic music and pattern creation developed by [Alex McLean](https://github.com/yaxu). TidalCycles pioneered the live coding music paradigm and has been a major influence on music technology.
 
-Strudel brings the joy of live coding to the web, making music creation accessible and fun. It's inspired by TidalCycles and built with modern web technologies. We're grateful for the amazing work the Strudel team has done to make creative music coding available to everyone.
+This project would not be possible without **[Strudel](https://strudel.cc/)**, an incredible live coding environment for algorithmic music and pattern creation that brings TidalCycles to the web. Strudel is developed and maintained by [Felix Roos](https://github.com/felixroos) and the broader Strudel community.
+
+Strudel brings the joy of live coding to the web, making music creation accessible and fun. We're grateful for the amazing work the Strudel team has done to make creative music coding available to everyone.
 
 **Learn more about Strudel:**
 - 🌐 Website: [strudel.cc](https://strudel.cc/)
