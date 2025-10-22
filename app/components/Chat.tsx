@@ -4,9 +4,10 @@ import { ChatInput } from "./chat-input";
 
 interface ChatProps {
 	onViewChats?: () => void;
+	onNewChat?: () => void;
 }
 
-export function Chat({ onViewChats }: ChatProps) {
+export function Chat({ onViewChats, onNewChat }: ChatProps) {
 	const { getCurrentChatMessages } = useStore();
 	const messages = getCurrentChatMessages();
 
@@ -19,6 +20,12 @@ export function Chat({ onViewChats }: ChatProps) {
 						className="text-xs text-white/40 hover:text-white/60 transition-colors"
 					>
 						view chats
+					</button>
+					<button
+						onClick={onNewChat}
+						className="text-xs text-white/40 hover:text-white/60 transition-colors"
+					>
+						new chat
 					</button>
 				</div>
 			)}

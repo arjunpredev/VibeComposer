@@ -4,10 +4,16 @@ import { Chat } from "./Chat";
 import { ApiKeyButton } from "./api-key-button";
 import { ExamplesModal } from "./examples-modal";
 import { ChatsSidebar } from "./chats-sidebar";
+import { useStore } from "~/store/useStore";
 
 export function DesktopLayout() {
 	const [showExamplesModal, setShowExamplesModal] = useState(false);
 	const [showChatsModal, setShowChatsModal] = useState(false);
+	const { createChat } = useStore();
+
+	function handleNewChat() {
+		createChat();
+	}
 
 	return (
 		<div className="hidden md:flex flex-1 overflow-hidden min-h-0">
@@ -42,7 +48,10 @@ export function DesktopLayout() {
 					<ApiKeyButton />
 				</div>
 				<div className="flex-1 min-h-0">
-					<Chat onViewChats={() => setShowChatsModal(true)} />
+					<Chat
+						onViewChats={() => setShowChatsModal(true)}
+						onNewChat={handleNewChat}
+					/>
 				</div>
 			</div>
 

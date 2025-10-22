@@ -2,9 +2,11 @@ import { useState } from "react";
 import { StrudelRepl } from "./StrudelRepl";
 import { Chat } from "./Chat";
 import { ApiKeyButton } from "./api-key-button";
+import { MobileTabNavigation } from "./mobile-tab-navigation";
 import { TroubleHearingModal } from "./trouble-hearing-modal";
 import { ExamplesModal } from "./examples-modal";
 import { ChatsSidebar } from "./chats-sidebar";
+import { useStore } from "~/store/useStore";
 
 interface MobileLayoutProps {
 	activeTab: "repl" | "chat";
@@ -15,6 +17,11 @@ export function MobileLayout({ activeTab, onTabChange }: MobileLayoutProps) {
 	const [showTroubleHearingModal, setShowTroubleHearingModal] = useState(false);
 	const [showExamplesModal, setShowExamplesModal] = useState(false);
 	const [showChatsModal, setShowChatsModal] = useState(false);
+	const { createChat } = useStore();
+
+	function handleNewChat() {
+		createChat();
+	}
 
 	return (
 		<div className="md:hidden flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -22,7 +29,7 @@ export function MobileLayout({ activeTab, onTabChange }: MobileLayoutProps) {
 				<div className="flex flex-col flex-1 min-h-0 overflow-hidden">
 					<div className="border-b border-white/20 px-4 py-2 text-sm text-white/70 flex-shrink-0 flex items-center justify-between h-10">
 						<span>STRUDEL REPL</span>
-						<div className="flex gap-1.5 items-center">
+						<div className="flex gap-3 items-center">
 							<button
 								onClick={() => setShowExamplesModal(true)}
 								className="px-2.5 py-1 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-white/30 transition-colors text-xs text-white/90 rounded"
@@ -56,7 +63,10 @@ export function MobileLayout({ activeTab, onTabChange }: MobileLayoutProps) {
 						<ApiKeyButton />
 					</div>
 					<div className="flex-1 min-h-0 overflow-hidden">
-						<Chat onViewChats={() => setShowChatsModal(true)} />
+						<Chat
+							onViewChats={() => setShowChatsModal(true)}
+							onNewChat={handleNewChat}
+						/>
 					</div>
 				</div>
 			)}
