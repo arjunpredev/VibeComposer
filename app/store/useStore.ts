@@ -56,7 +56,7 @@ const STORAGE_KEY_ACTIVE_CHAT = "vibe-composer-active-chat";
 const STORAGE_KEY_API = "vibe-composer-api-key";
 const STORAGE_KEY_CODE = "vibe-composer-strudel-code";
 
-const DEFAULT_STRUDEL_CODE = `// dante as synth - Originally Vibe Composed by @ArjunRajJain
+const DEFAULT_STRUDEL_CODE = `// dante sine squared - Originally Vibe Composed by @ArjunRajJain
 
 setcps(0.5)
 stack(

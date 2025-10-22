@@ -8,7 +8,7 @@ export const STRUDEL_EXAMPLES: StrudelExample[] = [
 	{
 		name: "dante as synth",
 		by: "Arjun Raj Jain",
-		code: `// dante as synth - Originally Vibe Composed by @ArjunRajJain
+		code: `// dante sine squared - Originally Vibe Composed by @ArjunRajJain
 
 setcps(0.5)
 stack(
