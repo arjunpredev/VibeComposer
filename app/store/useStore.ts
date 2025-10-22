@@ -17,6 +17,7 @@ interface AppState {
 	isStreaming: boolean;
 	streamingContent: string;
 	showingExamples: boolean;
+	currentExampleIndex: number;
 	setApiKey: (key: string) => void;
 	clearApiKey: () => void;
 	addMessage: (message: Message) => void;
@@ -27,6 +28,7 @@ interface AppState {
 	setIsStreaming: (isStreaming: boolean) => void;
 	setStreamingContent: (content: string) => void;
 	setShowingExamples: (showing: boolean) => void;
+	setCurrentExampleIndex: (index: number) => void;
 	loadFromLocalStorage: () => void;
 }
 
@@ -74,6 +76,7 @@ export const useStore = create<AppState>((set) => ({
 	isStreaming: false,
 	streamingContent: "",
 	showingExamples: false,
+	currentExampleIndex: 0,
 
 	setApiKey: (key: string) => {
 		localStorage.setItem(STORAGE_KEY_API, key);
@@ -121,6 +124,10 @@ export const useStore = create<AppState>((set) => ({
 
 	setShowingExamples: (showing: boolean) => {
 		set({ showingExamples: showing });
+	},
+
+	setCurrentExampleIndex: (index: number) => {
+		set({ currentExampleIndex: index });
 	},
 
 	loadFromLocalStorage: () => {

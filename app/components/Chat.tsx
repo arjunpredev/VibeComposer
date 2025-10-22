@@ -14,7 +14,7 @@ export function Chat() {
 						onClick={() => setShowingExamples(!showingExamples)}
 						className="text-xs text-white/40 hover:text-white/60 transition-colors"
 					>
-						{showingExamples ? "hide examples" : "view examples"}
+						{showingExamples ? "hide prompts" : "view prompts"}
 					</button>
 					<button
 						onClick={clearMessages}
