@@ -62,42 +62,121 @@ interface CreateChatRequest {
 	name: string;
 }
 
+interface RenameChatRequest {
+	chatId: string;
+	newName: string;
+	userId: string;
+}
+
+interface DeleteChatRequest {
+	chatId: string;
+	userId: string;
+}
+
 export const action: ActionFunction = async ({ request }) => {
-	if (request.method !== "POST") {
-		return json({ error: "Method not allowed" }, { status: 405 });
-	}
+	if (request.method === "POST") {
+		try {
+			await connectDB();
 
-	try {
-		await connectDB();
+			const { userId, name } = (await request.json()) as CreateChatRequest;
 
-		const { userId, name } = (await request.json()) as CreateChatRequest;
+			if (!userId || !name?.trim()) {
+				return json({ error: "userId and name are required" }, { status: 400 });
+			}
 
-		if (!userId || !name?.trim()) {
-			return json({ error: "userId and name are required" }, { status: 400 });
+			const now = Date.now();
+			const newChat = new Chat({
+				userId,
+				name: name.trim(),
+				messages: [],
+				createdAt: now,
+				updatedAt: now,
+			});
+
+			await newChat.save();
+
+			return json({
+				chat: newChat.toObject(),
+				success: true,
+			});
+		} catch (error) {
+			console.error("Create chat error:", error);
+			return json(
+				{
+					error: error instanceof Error ? error.message : "Failed to create chat",
+				},
+				{ status: 500 }
+			);
 		}
+	} else if (request.method === "PATCH") {
+		try {
+			await connectDB();
 
-		const now = Date.now();
-		const newChat = new Chat({
-			userId,
-			name: name.trim(),
-			messages: [],
-			createdAt: now,
-			updatedAt: now,
-		});
+			const { chatId, newName, userId } = (await request.json()) as RenameChatRequest;
 
-		await newChat.save();
+			if (!chatId || !newName?.trim() || !userId) {
+				return json(
+					{ error: "chatId, newName, and userId are required" },
+					{ status: 400 }
+				);
+			}
 
-		return json({
-			chat: newChat.toObject(),
-			success: true,
-		});
-	} catch (error) {
-		console.error("Create chat error:", error);
-		return json(
-			{
-				error: error instanceof Error ? error.message : "Failed to create chat",
-			},
-			{ status: 500 }
-		);
+			const updatedChat = await Chat.findOneAndUpdate(
+				{ _id: chatId, userId },
+				{ name: newName.trim(), updatedAt: Date.now() },
+				{ new: true }
+			);
+
+			if (!updatedChat) {
+				return json({ error: "Chat not found" }, { status: 404 });
+			}
+
+			return json({
+				chat: updatedChat.toObject(),
+				success: true,
+			});
+		} catch (error) {
+			console.error("Rename chat error:", error);
+			return json(
+				{
+					error: error instanceof Error ? error.message : "Failed to rename chat",
+				},
+				{ status: 500 }
+			);
+		}
+	} else if (request.method === "DELETE") {
+		try {
+			await connectDB();
+
+			const { chatId, userId } = (await request.json()) as DeleteChatRequest;
+
+			if (!chatId || !userId) {
+				return json(
+					{ error: "chatId and userId are required" },
+					{ status: 400 }
+				);
+			}
+
+			const deletedChat = await Chat.findOneAndDelete({ _id: chatId, userId });
+
+			if (!deletedChat) {
+				return json({ error: "Chat not found" }, { status: 404 });
+			}
+
+			return json({
+				success: true,
+				message: "Chat deleted successfully",
+			});
+		} catch (error) {
+			console.error("Delete chat error:", error);
+			return json(
+				{
+					error: error instanceof Error ? error.message : "Failed to delete chat",
+				},
+				{ status: 500 }
+			);
+		}
+	} else {
+		return json({ error: "Method not allowed" }, { status: 405 });
 	}
 };

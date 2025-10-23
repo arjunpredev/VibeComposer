@@ -138,28 +138,64 @@ export const useStore = create<AppState>((set, get) => ({
 	},
 
 	deleteChat: async (chatId: string) => {
-		trackEvent("chat_deleted", { chatId });
-		set((state) => ({
-			chats: state.chats.filter((c) => c._id !== chatId),
-			activeChatId:
-				state.activeChatId === chatId
-					? state.chats.length > 0
-						? state.chats[0]._id || null
-						: null
-					: state.activeChatId,
-		}));
+		try {
+			const userId = (window as any).__clerkUserId;
+			const response = await fetch("/api/chats", {
+				method: "DELETE",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ chatId, userId }),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to delete chat");
+			}
+
+			set((state) => ({
+				chats: state.chats.filter((c) => c._id !== chatId),
+				activeChatId:
+					state.activeChatId === chatId
+						? state.chats.length > 0
+							? state.chats[0]._id || null
+							: null
+						: state.activeChatId,
+			}));
+			trackEvent("chat_deleted", { chatId });
+		} catch (error) {
+			console.error("Error deleting chat:", error);
+			trackEvent("chat_deletion_failed", { error: String(error) });
+			throw error;
+		}
 	},
 
 	renameChat: async (chatId: string, newName: string) => {
 		if (!newName.trim()) return;
-		trackEvent("chat_renamed", { chatId, newName });
-		set((state) => ({
-			chats: state.chats.map((c) =>
-				c._id === chatId
-					? { ...c, name: newName.trim(), updatedAt: Date.now() }
-					: c
-			),
-		}));
+		try {
+			const userId = (window as any).__clerkUserId;
+			const response = await fetch("/api/chats", {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ chatId, newName, userId }),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to rename chat");
+			}
+
+			const { chat } = await response.json();
+
+			set((state) => ({
+				chats: state.chats.map((c) =>
+					c._id === chatId
+						? { ...c, name: chat.name, updatedAt: chat.updatedAt }
+						: c
+				),
+			}));
+			trackEvent("chat_renamed", { chatId, newName });
+		} catch (error) {
+			console.error("Error renaming chat:", error);
+			trackEvent("chat_rename_failed", { error: String(error) });
+			throw error;
+		}
 	},
 
 	setActiveChat: (chatId: string) => {
