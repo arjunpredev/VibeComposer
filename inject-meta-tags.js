@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const htmlPath = path.join(process.cwd(), "build/client/index.html");
+const htmlPath = path.join(process.cwd(), "build", "client", "index.html");
 const html = fs.readFileSync(htmlPath, "utf-8");
 
 const metaTags = `<meta property="og:locale" content="en" />
@@ -21,8 +21,8 @@ const metaTags = `<meta property="og:locale" content="en" />
 <meta name="twitter:image:alt" content="Vibe Composer - Where Live Coding meets Vibe Coding. AI-powered music composition and algorithmic production platform" />`;
 
 const updatedHtml = html.replace(
-  "<title>Loading...</title>",
-  `<title>Vibe Composer | AI Music Creation</title>\n${metaTags}`
+	"<title>Loading...</title>",
+	`<title>Vibe Composer | AI Music Creation</title>\n${metaTags}`
 );
 
 fs.writeFileSync(htmlPath, updatedHtml);
