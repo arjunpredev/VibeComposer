@@ -7,13 +7,16 @@ export function AuthSignInModal() {
 	const { isSignedIn, isLoaded } = useAuth();
 	const { showAuthPrompt, setShowAuthPrompt } = useStore();
 
-	if (isSignedIn || !showAuthPrompt) {
-		return null;
-	}
-
 	const isSignInMode =
 		typeof window !== "undefined" &&
 		new URLSearchParams(window.location.search).get("signin") === "true";
+
+	const hasSSOCallback =
+		typeof window !== "undefined" && window.location.hash.includes("#/sso-callback");
+
+	if (isSignedIn || (!showAuthPrompt && !hasSSOCallback)) {
+		return null;
+	}
 
 	const appearanceConfig = {
 		baseTheme: dark,
@@ -34,7 +37,7 @@ export function AuthSignInModal() {
 	return (
 		<div
 			className="fixed inset-0 flex items-center justify-center bg-black/95 z-50 p-4"
-			onClick={() => setShowAuthPrompt(false)}
+			onClick={() => !hasSSOCallback && setShowAuthPrompt(false)}
 		>
 			<div onClick={(e) => e.stopPropagation()}>
 				{isLoaded ? (
