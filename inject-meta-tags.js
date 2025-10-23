@@ -4,7 +4,9 @@ import path from "path";
 const htmlPath = path.join(process.cwd(), "build", "client", "index.html");
 
 if (!fs.existsSync(htmlPath)) {
-	console.log("⚠ SSR mode detected: index.html not found, skipping meta tag injection");
+	console.log(
+		"⚠ SSR mode detected: index.html not found, skipping meta tag injection"
+	);
 	process.exit(0);
 }
 
