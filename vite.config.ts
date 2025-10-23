@@ -13,6 +13,7 @@ export default defineConfig({
 		host: "0.0.0.0",
 		port: parseInt(process.env.PORT || "5173"),
 		middlewareMode: false,
+		allowedHosts: ["vibecomposer.onrender.com", "vibecomposer.studio"],
 	},
 	preview: {
 		host: "0.0.0.0",
