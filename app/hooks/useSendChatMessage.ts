@@ -31,7 +31,10 @@ export function useSendChatMessage() {
 			if (!chatId) {
 				try {
 					await createChat();
-					return;
+					chatId = useStore.getState().activeChatId;
+					if (!chatId) {
+						throw new Error("Failed to create chat");
+					}
 				} catch (error) {
 					console.error("Failed to create chat:", error);
 					return;
