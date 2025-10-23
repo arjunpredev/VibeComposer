@@ -1,16 +1,9 @@
 import { useStore } from "~/store/useStore";
+import { useTrackEvent } from "~/hooks/useTrackEvent";
 import { cleanStrudelCode } from "~/utils/strudel-utils";
 
 interface ChatMessageProps {
 	timestamp: number;
-}
-
-function formatTokens(tokens: number | undefined): string {
-	if (tokens === undefined) return "0";
-	if (tokens >= 1000) {
-		return (tokens / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-	}
-	return tokens.toString();
 }
 
 export function ChatMessage({ timestamp }: ChatMessageProps) {
@@ -20,6 +13,7 @@ export function ChatMessage({ timestamp }: ChatMessageProps) {
 		updateStrudelCode,
 		setActiveTab,
 	} = useStore();
+	const { trackEvent } = useTrackEvent();
 
 	const messages = getCurrentChatMessages();
 	const message = messages.find((m) => m.timestamp === timestamp);
@@ -31,6 +25,7 @@ export function ChatMessage({ timestamp }: ChatMessageProps) {
 	const isApplied = cleanedContent === currentStrudelCode;
 
 	function handleApplyCode() {
+		trackEvent("code: apply clicked", { isAlreadyApplied: isApplied });
 		updateStrudelCode(cleanedContent);
 		setActiveTab("repl");
 	}
@@ -50,12 +45,6 @@ export function ChatMessage({ timestamp }: ChatMessageProps) {
 					{content}
 				</pre>
 			</div>
-			{!isUser && message.inputTokens !== undefined && (
-				<div className="text-white/60 text-xs px-3">
-					📊 Tokens: {formatTokens(message.inputTokens)} in →{" "}
-					{formatTokens(message.outputTokens)} out
-				</div>
-			)}
 			{!isUser && (
 				<button
 					onClick={handleApplyCode}

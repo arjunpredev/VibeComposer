@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { StrudelRepl } from "./StrudelRepl";
 import { Chat } from "./Chat";
-import { ApiKeyButton } from "./api-key-button";
 import { MobileTabNavigation } from "./mobile-tab-navigation";
 import { TroubleHearingModal } from "./trouble-hearing-modal";
 import { ExamplesModal } from "./examples-modal";
@@ -17,10 +16,17 @@ export function MobileLayout({ activeTab, onTabChange }: MobileLayoutProps) {
 	const [showTroubleHearingModal, setShowTroubleHearingModal] = useState(false);
 	const [showExamplesModal, setShowExamplesModal] = useState(false);
 	const [showChatsModal, setShowChatsModal] = useState(false);
-	const { createChat } = useStore();
+	const { createChat, getMessageStats } = useStore();
+	const { totalMessages, messageLimit } = getMessageStats();
 
-	function handleNewChat() {
-		createChat();
+	async function handleNewChat() {
+		try {
+			await createChat();
+			setShowChatsModal(false);
+		} catch (error) {
+			console.error("Failed to create chat:", error);
+			alert("Failed to create chat");
+		}
 	}
 
 	return (
@@ -60,7 +66,9 @@ export function MobileLayout({ activeTab, onTabChange }: MobileLayoutProps) {
 				<div className="flex flex-col flex-1 min-h-0 overflow-hidden">
 					<div className="border-b border-white/20 px-4 py-2 flex items-center justify-between flex-shrink-0 h-10">
 						<span className="text-sm text-white/70">AI CHAT</span>
-						<ApiKeyButton />
+						<div className="text-xs text-white/60">
+							Messages: {totalMessages}/{messageLimit}
+						</div>
 					</div>
 					<div className="flex-1 min-h-0 overflow-hidden">
 						<Chat

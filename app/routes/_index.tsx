@@ -1,22 +1,23 @@
 import { useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { useStore } from "~/store/useStore";
+import { useTrackEvent } from "~/hooks/useTrackEvent";
 import { AppHeader } from "~/components/app-header";
 import { DesktopLayout } from "~/components/desktop-layout";
 import { MobileLayout } from "~/components/mobile-layout";
 import { MobileTabNavigation } from "~/components/mobile-tab-navigation";
 import { Footer } from "~/components/footer";
-import { ApiKeyModal } from "~/components/api-key-modal";
 import { AuthSignInModal } from "~/components/auth-sign-in-modal";
+import { MessageLimitExceededModal } from "~/components/message-limit-exceeded-modal";
 
 export default function Index() {
-	const { loadFromLocalStorage, activeTab, setActiveTab, setShowingExamples } =
-		useStore();
+	const { activeTab, setActiveTab, setShowingExamples } = useStore();
 	const { isSignedIn, isLoaded } = useAuth();
+	const { trackEvent } = useTrackEvent();
 
 	useEffect(() => {
-		loadFromLocalStorage();
-	}, []);
+		trackEvent("app: page viewed");
+	}, [trackEvent]);
 
 	const handleHeaderClick = () => {
 		setShowingExamples(true);
@@ -36,8 +37,8 @@ export default function Index() {
 			<div className="flex-shrink-0">
 				<Footer />
 			</div>
-			<ApiKeyModal />
 			<AuthSignInModal />
+			<MessageLimitExceededModal />
 		</div>
 	);
 }

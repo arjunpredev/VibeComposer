@@ -11,6 +11,12 @@ export default async function handleRequest(
 	responseHeaders: Headers,
 	routerContext: AppLoadContext
 ) {
+	const url = new URL(request.url);
+	
+	if (url.pathname.startsWith("/api/")) {
+		return routerContext.router.request(request);
+	}
+
 	const userAgent = request.headers.get("user-agent");
 	const readableStream = await renderToReadableStream(
 		<ServerRouter url={request.url} context={routerContext} />,

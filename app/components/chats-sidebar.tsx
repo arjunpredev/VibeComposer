@@ -65,7 +65,7 @@ export function ChatsSidebar({
 			{(!isCollapsed || isModal) && (
 				<>
 					<div className="px-2 py-2 flex-shrink-0">
-						<CreateChatButton />
+						<CreateChatButton onChatCreated={onChatSelect} />
 					</div>
 
 					<div className="flex-1 overflow-y-auto space-y-1 px-2 py-2">

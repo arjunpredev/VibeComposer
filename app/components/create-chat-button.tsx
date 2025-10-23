@@ -1,7 +1,13 @@
 import { useStore } from "~/store/useStore";
+import { useTrackEvent } from "~/hooks/useTrackEvent";
 
-export function CreateChatButton() {
+interface CreateChatButtonProps {
+	onChatCreated?: () => void;
+}
+
+export function CreateChatButton({ onChatCreated }: CreateChatButtonProps) {
 	const { createChat } = useStore();
+	const { trackEvent } = useTrackEvent();
 
 	function handleCreate() {
 		const now = new Date();
@@ -11,7 +17,9 @@ export function CreateChatButton() {
 			hour12: true,
 		});
 		const dateStr = now.toLocaleDateString();
+		trackEvent("chat: new clicked");
 		createChat(`${dateStr} ${timeStr}`);
+		onChatCreated?.();
 	}
 
 	return (

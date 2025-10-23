@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
+import { trackEvent } from "~/utils/strudel-utils";
 
 interface Message {
 	role: "user" | "assistant";
@@ -10,7 +11,9 @@ interface Message {
 }
 
 interface Chat {
-	id: string;
+	_id?: string;
+	id?: string;
+	userId?: string;
 	name: string;
 	messages: Message[];
 	createdAt: number;
@@ -18,7 +21,6 @@ interface Chat {
 }
 
 interface AppState {
-	apiKey: string | null;
 	chats: Chat[];
 	activeChatId: string | null;
 	currentStrudelCode: string;
@@ -28,17 +30,16 @@ interface AppState {
 	streamingContent: string;
 	showingExamples: boolean;
 	currentExampleIndex: number;
-	isApiKeyModalOpen: boolean;
-	apiKeyModalWarning: string | null;
 	isSignInModalOpen: boolean;
 	isAuthLoading: boolean;
-	setApiKey: (key: string) => void;
-	clearApiKey: () => void;
-	createChat: (name?: string) => void;
-	deleteChat: (chatId: string) => void;
-	renameChat: (chatId: string, newName: string) => void;
+	totalMessages: number;
+	messageLimit: number;
+	createChat: (name?: string) => Promise<void>;
+	deleteChat: (chatId: string) => Promise<void>;
+	renameChat: (chatId: string, newName: string) => Promise<void>;
 	setActiveChat: (chatId: string) => void;
 	addMessage: (message: Message) => void;
+	removeLastMessage: () => void;
 	clearCurrentChat: () => void;
 	updateStrudelCode: (code: string) => void;
 	setActiveTab: (tab: "repl" | "chat") => void;
@@ -47,17 +48,19 @@ interface AppState {
 	setStreamingContent: (content: string) => void;
 	setShowingExamples: (showing: boolean) => void;
 	setCurrentExampleIndex: (index: number) => void;
-	setApiKeyModalOpen: (isOpen: boolean) => void;
-	setApiKeyModalWarning: (warning: string | null) => void;
 	setSignInModalOpen: (isOpen: boolean) => void;
 	setAuthLoading: (isLoading: boolean) => void;
-	loadFromLocalStorage: () => void;
+	loadChats: (userId: string) => Promise<void>;
 	getCurrentChatMessages: () => Message[];
+	getMessageStats: () => {
+		totalMessages: number;
+		messageLimit: number;
+		remainingMessages: number;
+	};
+	messageLimitExceededModalOpen: boolean;
+	setMessageLimitExceededModalOpen: (isOpen: boolean) => void;
 }
 
-const STORAGE_KEY_CHATS = "vibe-composer-chats";
-const STORAGE_KEY_ACTIVE_CHAT = "vibe-composer-active-chat";
-const STORAGE_KEY_API = "vibe-composer-api-key";
 const STORAGE_KEY_CODE = "vibe-composer-strudel-code";
 
 const DEFAULT_STRUDEL_CODE = `// dante sine squared - Originally Vibe Composed by @ArjunRajJain
@@ -89,19 +92,7 @@ stack(
   .echo(4,.16,.4),
 )`;
 
-function createNewChat(name?: string): Chat {
-	const now = Date.now();
-	return {
-		id: uuidv4(),
-		name: name || `Chat ${new Date().toLocaleDateString()}`,
-		messages: [],
-		createdAt: now,
-		updatedAt: now,
-	};
-}
-
 export const useStore = create<AppState>((set, get) => ({
-	apiKey: null,
 	chats: [],
 	activeChatId: null,
 	currentStrudelCode: DEFAULT_STRUDEL_CODE,
@@ -111,67 +102,70 @@ export const useStore = create<AppState>((set, get) => ({
 	streamingContent: "",
 	showingExamples: false,
 	currentExampleIndex: 0,
-	isApiKeyModalOpen: false,
-	apiKeyModalWarning: null,
 	isSignInModalOpen: false,
 	isAuthLoading: false,
+	totalMessages: 0,
+	messageLimit: 10,
+	messageLimitExceededModalOpen: false,
 
-	setApiKey: (key: string) => {
-		localStorage.setItem(STORAGE_KEY_API, key);
-		set({ apiKey: key });
-	},
+	createChat: async (name?: string) => {
+		try {
+			const userId = (window as any).__clerkUserId;
+			const response = await fetch("/api/chats", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					userId,
+					name: name || `Chat ${new Date().toLocaleDateString()}`,
+				}),
+			});
 
-	clearApiKey: () => {
-		localStorage.removeItem(STORAGE_KEY_API);
-		set({ apiKey: null });
-	},
-
-	createChat: (name?: string) => {
-		const newChat = createNewChat(name);
-		set((state) => {
-			const updatedChats = [...state.chats, newChat];
-			localStorage.setItem(STORAGE_KEY_CHATS, JSON.stringify(updatedChats));
-			return { chats: updatedChats, activeChatId: newChat.id };
-		});
-		localStorage.setItem(STORAGE_KEY_ACTIVE_CHAT, newChat.id);
-	},
-
-	deleteChat: (chatId: string) => {
-		set((state) => {
-			const updatedChats = state.chats.filter((chat) => chat.id !== chatId);
-			localStorage.setItem(STORAGE_KEY_CHATS, JSON.stringify(updatedChats));
-
-			let newActiveChatId = state.activeChatId;
-			if (state.activeChatId === chatId) {
-				newActiveChatId = updatedChats.length > 0 ? updatedChats[0].id : null;
-				if (newActiveChatId) {
-					localStorage.setItem(STORAGE_KEY_ACTIVE_CHAT, newActiveChatId);
-				} else {
-					localStorage.removeItem(STORAGE_KEY_ACTIVE_CHAT);
-				}
+			if (!response.ok) {
+				throw new Error("Failed to create chat");
 			}
 
-			return { chats: updatedChats, activeChatId: newActiveChatId };
-		});
+			const { chat } = await response.json();
+			set((state) => ({
+				chats: [...state.chats, chat],
+				activeChatId: chat._id,
+			}));
+			trackEvent("chat_created", { chatId: chat._id, chatName: chat.name });
+		} catch (error) {
+			console.error("Error creating chat:", error);
+			trackEvent("chat_creation_failed", { error: String(error) });
+			throw error;
+		}
 	},
 
-	renameChat: (chatId: string, newName: string) => {
+	deleteChat: async (chatId: string) => {
+		trackEvent("chat_deleted", { chatId });
+		set((state) => ({
+			chats: state.chats.filter((c) => c._id !== chatId),
+			activeChatId:
+				state.activeChatId === chatId
+					? state.chats.length > 0
+						? state.chats[0]._id || null
+						: null
+					: state.activeChatId,
+		}));
+	},
+
+	renameChat: async (chatId: string, newName: string) => {
 		if (!newName.trim()) return;
-		set((state) => {
-			const updatedChats = state.chats.map((chat) =>
-				chat.id === chatId
-					? { ...chat, name: newName.trim(), updatedAt: Date.now() }
-					: chat
-			);
-			localStorage.setItem(STORAGE_KEY_CHATS, JSON.stringify(updatedChats));
-			return { chats: updatedChats };
-		});
+		trackEvent("chat_renamed", { chatId, newName });
+		set((state) => ({
+			chats: state.chats.map((c) =>
+				c._id === chatId
+					? { ...c, name: newName.trim(), updatedAt: Date.now() }
+					: c
+			),
+		}));
 	},
 
 	setActiveChat: (chatId: string) => {
+		trackEvent("chat_selected", { chatId });
 		const state = get();
-		if (state.chats.find((chat) => chat.id === chatId)) {
-			localStorage.setItem(STORAGE_KEY_ACTIVE_CHAT, chatId);
+		if (state.chats.find((c) => c._id === chatId)) {
 			set({ activeChatId: chatId });
 		}
 	},
@@ -179,50 +173,85 @@ export const useStore = create<AppState>((set, get) => ({
 	addMessage: (message: Message) => {
 		set((state) => {
 			if (!state.activeChatId) return state;
+			return {
+				chats: state.chats.map((chat) =>
+					chat._id === state.activeChatId
+						? {
+								...chat,
+								messages: [...chat.messages, message],
+								updatedAt: Date.now(),
+							}
+						: chat
+				),
+				totalMessages:
+					message.role === "user"
+						? state.totalMessages + 1
+						: state.totalMessages,
+			};
+		});
+	},
 
-			const updatedChats = state.chats.map((chat) =>
-				chat.id === state.activeChatId
-					? {
-							...chat,
-							messages: [...chat.messages, message],
-							updatedAt: Date.now(),
-						}
-					: chat
-			);
-			localStorage.setItem(STORAGE_KEY_CHATS, JSON.stringify(updatedChats));
-			return { chats: updatedChats };
+	removeLastMessage: () => {
+		set((state) => {
+			if (!state.activeChatId) return state;
+			const chat = state.chats.find((c) => c._id === state.activeChatId);
+			const lastMessage = chat?.messages[chat.messages.length - 1];
+			const isUserMessage = lastMessage?.role === "user";
+
+			return {
+				chats: state.chats.map((c) =>
+					c._id === state.activeChatId
+						? {
+								...c,
+								messages: c.messages.slice(0, -1),
+								updatedAt: Date.now(),
+							}
+						: c
+				),
+				totalMessages: isUserMessage
+					? state.totalMessages - 1
+					: state.totalMessages,
+			};
 		});
 	},
 
 	clearCurrentChat: () => {
 		set((state) => {
 			if (!state.activeChatId) return state;
-
-			const updatedChats = state.chats.map((chat) =>
-				chat.id === state.activeChatId
-					? { ...chat, messages: [], updatedAt: Date.now() }
-					: chat
-			);
-			localStorage.setItem(STORAGE_KEY_CHATS, JSON.stringify(updatedChats));
-			return { chats: updatedChats };
+			return {
+				chats: state.chats.map((chat) =>
+					chat._id === state.activeChatId
+						? { ...chat, messages: [], updatedAt: Date.now() }
+						: chat
+				),
+			};
 		});
 	},
 
 	getCurrentChatMessages: () => {
 		const state = get();
 		if (!state.activeChatId) return [];
-		const activeChat = state.chats.find(
-			(chat) => chat.id === state.activeChatId
-		);
+		const activeChat = state.chats.find((c) => c._id === state.activeChatId);
 		return activeChat?.messages || [];
+	},
+
+	getMessageStats: () => {
+		const state = get();
+		return {
+			totalMessages: state.totalMessages,
+			messageLimit: state.messageLimit,
+			remainingMessages: Math.max(0, state.messageLimit - state.totalMessages),
+		};
 	},
 
 	updateStrudelCode: (code: string) => {
 		localStorage.setItem(STORAGE_KEY_CODE, code);
 		set({ currentStrudelCode: code });
+		trackEvent("strudel_code_updated", { codeLength: code.length });
 	},
 
 	setActiveTab: (tab: "repl" | "chat") => {
+		trackEvent("tab_switched", { tab });
 		set({ activeTab: tab });
 	},
 
@@ -239,19 +268,12 @@ export const useStore = create<AppState>((set, get) => ({
 	},
 
 	setShowingExamples: (showing: boolean) => {
+		trackEvent("examples_toggled", { showing });
 		set({ showingExamples: showing });
 	},
 
 	setCurrentExampleIndex: (index: number) => {
 		set({ currentExampleIndex: index });
-	},
-
-	setApiKeyModalOpen: (isOpen: boolean) => {
-		set({ isApiKeyModalOpen: isOpen });
-	},
-
-	setApiKeyModalWarning: (warning: string | null) => {
-		set({ apiKeyModalWarning: warning });
 	},
 
 	setSignInModalOpen: (isOpen: boolean) => {
@@ -262,43 +284,27 @@ export const useStore = create<AppState>((set, get) => ({
 		set({ isAuthLoading: isLoading });
 	},
 
-	loadFromLocalStorage: () => {
-		const apiKey = localStorage.getItem(STORAGE_KEY_API);
-		const chatsStr = localStorage.getItem(STORAGE_KEY_CHATS);
-		const activeChatId = localStorage.getItem(STORAGE_KEY_ACTIVE_CHAT);
-		const code = localStorage.getItem(STORAGE_KEY_CODE);
+	loadChats: async (userId: string) => {
+		try {
+			const response = await fetch(
+				`/api/chats?userId=${userId}&page=1&pageSize=10`
+			);
+			if (!response.ok) throw new Error("Failed to load chats");
 
-		let chats: Chat[] = [];
-		let finalActiveChatId: string | null = null;
+			const { chats, totalMessages } = await response.json();
+			const latestChat = chats.length > 0 ? chats[0] : null;
 
-		if (chatsStr) {
-			try {
-				chats = JSON.parse(chatsStr);
-			} catch {
-				chats = [];
-			}
+			set({
+				chats,
+				activeChatId: latestChat?._id || null,
+				totalMessages,
+			});
+		} catch (error) {
+			console.error("Error loading chats:", error);
 		}
+	},
 
-		if (chats.length === 0) {
-			const newChat = createNewChat();
-			chats = [newChat];
-			finalActiveChatId = newChat.id;
-		} else if (activeChatId && chats.find((c) => c.id === activeChatId)) {
-			finalActiveChatId = activeChatId;
-		} else if (chats.length > 0) {
-			finalActiveChatId = chats[0].id;
-		}
-
-		set({
-			apiKey: apiKey || null,
-			chats,
-			activeChatId: finalActiveChatId,
-			currentStrudelCode: code || DEFAULT_STRUDEL_CODE,
-		});
-
-		if (finalActiveChatId) {
-			localStorage.setItem(STORAGE_KEY_ACTIVE_CHAT, finalActiveChatId);
-		}
-		localStorage.setItem(STORAGE_KEY_CHATS, JSON.stringify(chats));
+	setMessageLimitExceededModalOpen: (isOpen: boolean) => {
+		set({ messageLimitExceededModalOpen: isOpen });
 	},
 }));

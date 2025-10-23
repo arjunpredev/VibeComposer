@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useStore } from "~/store/useStore";
+import { useTrackEvent } from "~/hooks/useTrackEvent";
 import { Chat } from "~/store/useStore";
 
 interface ChatListItemProps {
@@ -14,13 +16,16 @@ export function ChatListItem({
 	onChatSelect,
 }: ChatListItemProps) {
 	const { setActiveChat, renameChat, deleteChat } = useStore();
+	const navigate = useNavigate();
+	const { trackEvent } = useTrackEvent();
 	const [isRenaming, setIsRenaming] = useState(false);
 	const [newName, setNewName] = useState(chat.name);
 	const [showMenu, setShowMenu] = useState(false);
 
 	function handleRename() {
 		if (newName.trim() && newName !== chat.name) {
-			renameChat(chat.id, newName);
+			trackEvent("chat: renamed");
+			renameChat(chat._id || chat.id, newName);
 		} else {
 			setNewName(chat.name);
 		}
@@ -29,16 +34,22 @@ export function ChatListItem({
 
 	function handleDelete() {
 		if (confirm(`Delete chat "${chat.name}"?`)) {
-			deleteChat(chat.id);
+			trackEvent("chat: delete confirmed");
+			deleteChat(chat._id || chat.id);
 		}
 	}
 
 	function handleSelectChat() {
-		setActiveChat(chat.id);
+		const chatId = chat._id || chat.id;
+		setActiveChat(chatId);
+		navigate(`?chatId=${chatId}`);
+		trackEvent("chat: selected from list");
 		onChatSelect?.();
 	}
 
-	const messageCount = chat.messages.length;
+	const userMessageCount = chat.messages.filter(
+		(m) => m.role === "user"
+	).length;
 	const lastUpdated = new Date(chat.updatedAt);
 	const timeAgo = getTimeAgo(lastUpdated);
 
@@ -77,7 +88,7 @@ export function ChatListItem({
 								{chat.name}
 							</p>
 							<p className="text-xs text-white/50 mt-0.5">
-								{messageCount} message{messageCount !== 1 ? "s" : ""} •{" "}
+								{userMessageCount} message{userMessageCount !== 1 ? "s" : ""} •{" "}
 								{timeAgo}
 							</p>
 						</div>

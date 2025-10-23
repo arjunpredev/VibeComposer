@@ -1,3 +1,5 @@
+import { useTrackEvent } from "~/hooks/useTrackEvent";
+
 interface SuggestionsPanelProps {
 	onSuggestionClick: (text: string) => void;
 }
@@ -139,6 +141,13 @@ const SUGGESTIONS = [
 ];
 
 export function SuggestionsPanel({ onSuggestionClick }: SuggestionsPanelProps) {
+	const { trackEvent } = useTrackEvent();
+
+	function handleSuggestionClick(suggestion: typeof SUGGESTIONS[0]) {
+		trackEvent("prompt: suggested clicked", { promptTitle: suggestion.title });
+		onSuggestionClick(suggestion.prompt);
+	}
+
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="text-white/70 text-sm">
@@ -150,7 +159,7 @@ export function SuggestionsPanel({ onSuggestionClick }: SuggestionsPanelProps) {
 				{SUGGESTIONS.map((suggestion) => (
 					<button
 						key={suggestion.title}
-						onClick={() => onSuggestionClick(suggestion.prompt)}
+						onClick={() => handleSuggestionClick(suggestion)}
 						className="text-left p-3 border border-white/20 hover:border-white/50 hover:bg-white/5 transition-all cursor-pointer group"
 					>
 						<div className="font-semibold text-white group-hover:text-white transition-colors">

@@ -1,8 +1,16 @@
 import { useEffect } from "react";
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+	Links,
+	Meta,
+	Outlet,
+	Scripts,
+	ScrollRestoration,
+	useSearchParams,
+} from "react-router";
 import type { LinksFunction, MetaFunction } from "react-router";
-import { ClerkProvider } from "@clerk/clerk-react";
+import { ClerkProvider, useAuth } from "@clerk/clerk-react";
 import { useStore } from "~/store/useStore";
+import { useTrackEvent } from "~/hooks/useTrackEvent";
 import indexCss from "~/styles/index.css?url";
 
 export const meta: MetaFunction = () => {
@@ -85,12 +93,27 @@ export const links: LinksFunction = () => [
 	},
 ];
 
-function Root() {
-	const { loadFromLocalStorage } = useStore();
+function RootContent() {
+	const { loadChats, setActiveChat } = useStore();
+	const { userId, isSignedIn, isLoaded } = useAuth();
+	const [searchParams] = useSearchParams();
+	const { trackEvent } = useTrackEvent();
 
 	useEffect(() => {
-		loadFromLocalStorage();
-	}, [loadFromLocalStorage]);
+		if (isLoaded && isSignedIn && userId) {
+			loadChats(userId);
+			(window as any).__clerkUserId = userId;
+			trackEvent("user: signed in");
+		}
+	}, [isLoaded, isSignedIn, userId, loadChats, trackEvent]);
+
+	// Load chat from URL param if present
+	useEffect(() => {
+		const chatId = searchParams.get("chatId");
+		if (chatId) {
+			setActiveChat(chatId);
+		}
+	}, [searchParams, setActiveChat]);
 
 	useEffect(() => {
 		// Load Strudel embed script locally
@@ -106,6 +129,10 @@ function Root() {
 		};
 	}, []);
 
+	return <Outlet />;
+}
+
+function Root() {
 	const publishableKey = (import.meta as any).env.CLERK_PUBLISHABLE_KEY;
 
 	if (!publishableKey) {
@@ -124,7 +151,7 @@ function Root() {
 					<Links />
 				</head>
 				<body>
-					<Outlet />
+					<RootContent />
 					<ScrollRestoration />
 					<Scripts />
 				</body>
