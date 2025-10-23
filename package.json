@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "react-router dev",
 		"build": "react-router build && node inject-meta-tags.js",
-		"start": "react-router dev --host 0.0.0.0 --port ${PORT:-5173}",
+		"start": "npm run dev",
 		"typecheck": "tsc",
 		"lint": "eslint ."
 	},
