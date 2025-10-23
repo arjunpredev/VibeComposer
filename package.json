@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "react-router dev",
 		"build": "react-router build && node inject-meta-tags.js",
-		"start": "serve ./build/client -s -p 4173",
+		"start": "node build/server/index.js",
 		"typecheck": "tsc",
 		"lint": "eslint ."
 	},
