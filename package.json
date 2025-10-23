@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "react-router dev",
 		"build": "react-router build && node inject-meta-tags.js",
-		"start": "serve ./build/client -p ${PORT:-5173}",
+		"start": "@react-router/serve build/server/index.js --port ${PORT:-3000}",
 		"typecheck": "tsc",
 		"lint": "eslint ."
 	},
@@ -14,6 +14,7 @@
 		"@anthropic-ai/sdk": "^0.67.0",
 		"@clerk/clerk-react": "^5.53.3",
 		"@clerk/themes": "^2.4.29",
+		"@react-router/serve": "^7.9.4",
 		"dotenv": "^17.2.3",
 		"isbot": "^4.1.1",
 		"mongoose": "^8.19.2",
