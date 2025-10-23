@@ -30,6 +30,8 @@ interface AppState {
 	currentExampleIndex: number;
 	isApiKeyModalOpen: boolean;
 	apiKeyModalWarning: string | null;
+	isSignInModalOpen: boolean;
+	isAuthLoading: boolean;
 	setApiKey: (key: string) => void;
 	clearApiKey: () => void;
 	createChat: (name?: string) => void;
@@ -47,6 +49,8 @@ interface AppState {
 	setCurrentExampleIndex: (index: number) => void;
 	setApiKeyModalOpen: (isOpen: boolean) => void;
 	setApiKeyModalWarning: (warning: string | null) => void;
+	setSignInModalOpen: (isOpen: boolean) => void;
+	setAuthLoading: (isLoading: boolean) => void;
 	loadFromLocalStorage: () => void;
 	getCurrentChatMessages: () => Message[];
 }
@@ -109,6 +113,8 @@ export const useStore = create<AppState>((set, get) => ({
 	currentExampleIndex: 0,
 	isApiKeyModalOpen: false,
 	apiKeyModalWarning: null,
+	isSignInModalOpen: false,
+	isAuthLoading: false,
 
 	setApiKey: (key: string) => {
 		localStorage.setItem(STORAGE_KEY_API, key);
@@ -246,6 +252,14 @@ export const useStore = create<AppState>((set, get) => ({
 
 	setApiKeyModalWarning: (warning: string | null) => {
 		set({ apiKeyModalWarning: warning });
+	},
+
+	setSignInModalOpen: (isOpen: boolean) => {
+		set({ isSignInModalOpen: isOpen });
+	},
+
+	setAuthLoading: (isLoading: boolean) => {
+		set({ isAuthLoading: isLoading });
 	},
 
 	loadFromLocalStorage: () => {

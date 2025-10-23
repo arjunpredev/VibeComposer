@@ -6,7 +6,7 @@ export interface StrudelExample {
 
 export const STRUDEL_EXAMPLES: StrudelExample[] = [
 	{
-		name: "dante as synth",
+		name: "dante sine squared",
 		by: "Arjun Raj Jain",
 		code: `// dante sine squared - Originally Vibe Composed by @ArjunRajJain
 

@@ -12,6 +12,8 @@
 	},
 	"dependencies": {
 		"@anthropic-ai/sdk": "^0.67.0",
+		"@clerk/clerk-react": "^5.53.3",
+		"@clerk/themes": "^2.4.29",
 		"isbot": "^4.1.1",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",

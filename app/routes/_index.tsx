@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useAuth } from "@clerk/clerk-react";
 import { useStore } from "~/store/useStore";
 import { AppHeader } from "~/components/app-header";
 import { DesktopLayout } from "~/components/desktop-layout";
@@ -6,10 +7,12 @@ import { MobileLayout } from "~/components/mobile-layout";
 import { MobileTabNavigation } from "~/components/mobile-tab-navigation";
 import { Footer } from "~/components/footer";
 import { ApiKeyModal } from "~/components/api-key-modal";
+import { AuthSignInModal } from "~/components/auth-sign-in-modal";
 
 export default function Index() {
 	const { loadFromLocalStorage, activeTab, setActiveTab, setShowingExamples } =
 		useStore();
+	const { isSignedIn, isLoaded } = useAuth();
 
 	useEffect(() => {
 		loadFromLocalStorage();
@@ -34,6 +37,7 @@ export default function Index() {
 				<Footer />
 			</div>
 			<ApiKeyModal />
+			<AuthSignInModal />
 		</div>
 	);
 }

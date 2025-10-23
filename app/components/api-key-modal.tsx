@@ -17,12 +17,6 @@ export function ApiKeyModal() {
 	const [error, setError] = useState("");
 
 	useEffect(() => {
-		if (!apiKey) {
-			setApiKeyModalOpen(true);
-		}
-	}, [apiKey, setApiKeyModalOpen]);
-
-	useEffect(() => {
 		function handleOpenModal() {
 			setApiKeyModalOpen(true);
 		}
@@ -98,29 +92,34 @@ export function ApiKeyModal() {
 	if (!isApiKeyModalOpen) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+		<div
+			className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+			onClick={(e) => {
+				if (e.target === e.currentTarget && apiKey) {
+					handleClose();
+				}
+			}}
+		>
 			<div className="bg-black border border-white/20 p-6 rounded-lg w-full max-w-2xl mx-4 space-y-4 max-h-[90vh] overflow-y-auto relative">
-				{!apiKey && (
-					<button
-						onClick={handleClose}
-						className="absolute top-4 right-4 p-1 hover:bg-white/10 rounded transition-colors text-white/60 hover:text-white"
-						aria-label="Close modal"
+				<button
+					onClick={handleClose}
+					className="absolute top-4 right-4 p-1 hover:bg-white/10 rounded transition-colors text-white/60 hover:text-white"
+					aria-label="Close modal"
+				>
+					<svg
+						className="w-5 h-5"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
 					>
-						<svg
-							className="w-5 h-5"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M6 18L18 6M6 6l12 12"
-							/>
-						</svg>
-					</button>
-				)}
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M6 18L18 6M6 6l12 12"
+						/>
+					</svg>
+				</button>
 				<img
 					src="/vibe-composer.png"
 					alt="Vibe Composer"
@@ -198,15 +197,6 @@ export function ApiKeyModal() {
 				</p>
 
 				<div className="flex gap-2 justify-end">
-					{apiKey && (
-						<button
-							onClick={handleClose}
-							className="px-4 py-2 text-sm border border-white/20 hover:bg-white/10 transition-colors rounded"
-							disabled={isValidating}
-						>
-							Cancel
-						</button>
-					)}
 					{!apiKey && (
 						<button
 							onClick={handleSave}
@@ -226,7 +216,7 @@ export function ApiKeyModal() {
 						rel="noopener noreferrer"
 						className="text-white/70 hover:text-white transition-colors underline"
 					>
-						Fork it yourself on GitHub
+						Go fork yourself (on GitHub)
 					</a>
 				</p>
 

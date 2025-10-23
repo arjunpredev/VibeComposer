@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import type { LinksFunction, MetaFunction } from "react-router";
+import { ClerkProvider } from "@clerk/clerk-react";
 import { useStore } from "~/store/useStore";
 import indexCss from "~/styles/index.css?url";
 
@@ -105,20 +106,28 @@ function Root() {
 		};
 	}, []);
 
+	const publishableKey = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY || (import.meta as any).env.CLERK_PUBLISHABLE_KEY;
+
+	if (!publishableKey) {
+		throw new Error("Missing Clerk Publishable Key. Please set VITE_CLERK_PUBLISHABLE_KEY or CLERK_PUBLISHABLE_KEY environment variable.");
+	}
+
 	return (
-		<html lang="en">
-			<head>
-				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<Meta />
-				<Links />
-			</head>
-			<body>
-				<Outlet />
-				<ScrollRestoration />
-				<Scripts />
-			</body>
-		</html>
+		<ClerkProvider publishableKey={publishableKey}>
+			<html lang="en">
+				<head>
+					<meta charSet="utf-8" />
+					<meta name="viewport" content="width=device-width, initial-scale=1" />
+					<Meta />
+					<Links />
+				</head>
+				<body>
+					<Outlet />
+					<ScrollRestoration />
+					<Scripts />
+				</body>
+			</html>
+		</ClerkProvider>
 	);
 }
 
