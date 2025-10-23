@@ -110,7 +110,7 @@ function Root() {
 
 	if (!publishableKey) {
 		throw new Error(
-			"Missing Clerk Publishable Key. Please set VITE_CLERK_PUBLISHABLE_KEY or CLERK_PUBLISHABLE_KEY environment variable."
+			"Missing Clerk Publishable Key. Please set CLERK_PUBLISHABLE_KEY environment variable."
 		);
 	}
 

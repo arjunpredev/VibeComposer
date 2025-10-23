@@ -50,7 +50,7 @@ CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_key_here
    - Create a new application
    - Navigate to the **API Keys** section in your dashboard
    - Copy your **Publishable Key** (starts with `pk_`)
-   - Set as either `VITE_CLERK_PUBLISHABLE_KEY` (recommended for Vite) or `CLERK_PUBLISHABLE_KEY`
+   - Set as either `CLERK_PUBLISHABLE_KEY`
 
 ### Installation
 

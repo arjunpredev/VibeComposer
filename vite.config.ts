@@ -5,9 +5,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
 	plugins: [tsconfigPaths(), reactRouter()],
 	define: {
-		"import.meta.env.VITE_CLERK_PUBLISHABLE_KEY": JSON.stringify(
-			process.env.CLERK_PUBLISHABLE_KEY ||
-				process.env.VITE_CLERK_PUBLISHABLE_KEY
+		"import.meta.env.CLERK_PUBLISHABLE_KEY": JSON.stringify(
+			process.env.CLERK_PUBLISHABLE_KEY
 		),
 	},
 	preview: {
