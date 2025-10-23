@@ -2,6 +2,12 @@ import fs from "fs";
 import path from "path";
 
 const htmlPath = path.join(process.cwd(), "build", "client", "index.html");
+
+if (!fs.existsSync(htmlPath)) {
+	console.log("⚠ SSR mode detected: index.html not found, skipping meta tag injection");
+	process.exit(0);
+}
+
 const html = fs.readFileSync(htmlPath, "utf-8");
 
 const metaTags = `<meta property="og:locale" content="en" />
