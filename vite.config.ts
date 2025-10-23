@@ -9,6 +9,11 @@ export default defineConfig({
 			process.env.CLERK_PUBLISHABLE_KEY
 		),
 	},
+	server: {
+		host: "0.0.0.0",
+		port: parseInt(process.env.PORT || "5173"),
+		middlewareMode: false,
+	},
 	preview: {
 		host: "0.0.0.0",
 		port: parseInt(process.env.PORT || "4173"),
