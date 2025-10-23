@@ -105,7 +105,7 @@ function RootContent() {
 			(window as any).__clerkUserId = userId;
 			trackEvent("user: signed in");
 		}
-	}, [isLoaded, isSignedIn, userId, loadChats, trackEvent]);
+	}, [isLoaded, isSignedIn, userId]);
 
 	// Load chat from URL param if present
 	useEffect(() => {
@@ -113,7 +113,7 @@ function RootContent() {
 		if (chatId) {
 			setActiveChat(chatId);
 		}
-	}, [searchParams, setActiveChat]);
+	}, [searchParams]);
 
 	useEffect(() => {
 		// Load Strudel embed script locally
