@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: vibe-composer
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npx @react-router/serve build/server/index.js
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URL
+        sync: false
+      - key: ANTHROPIC_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
