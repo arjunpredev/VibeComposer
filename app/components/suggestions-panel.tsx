@@ -1,4 +1,6 @@
+import { useAuth } from "@clerk/clerk-react";
 import { useTrackEvent } from "~/hooks/useTrackEvent";
+import { useStore } from "~/store/useStore";
 
 interface SuggestionsPanelProps {
 	onSuggestionClick: (text: string) => void;
@@ -142,10 +144,16 @@ const SUGGESTIONS = [
 
 export function SuggestionsPanel({ onSuggestionClick }: SuggestionsPanelProps) {
 	const { trackEvent } = useTrackEvent();
+	const { isSignedIn } = useAuth();
+	const { setShowAuthPrompt } = useStore();
 
 	function handleSuggestionClick(suggestion: typeof SUGGESTIONS[0]) {
 		trackEvent("prompt: suggested clicked", { promptTitle: suggestion.title });
-		onSuggestionClick(suggestion.prompt);
+		if (!isSignedIn) {
+			setShowAuthPrompt(true);
+		} else {
+			onSuggestionClick(suggestion.prompt);
+		}
 	}
 
 	return (

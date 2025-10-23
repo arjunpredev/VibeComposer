@@ -59,6 +59,8 @@ interface AppState {
 	};
 	messageLimitExceededModalOpen: boolean;
 	setMessageLimitExceededModalOpen: (isOpen: boolean) => void;
+	showAuthPrompt: boolean;
+	setShowAuthPrompt: (isOpen: boolean) => void;
 }
 
 const STORAGE_KEY_CODE = "vibe-composer-strudel-code";
@@ -107,6 +109,7 @@ export const useStore = create<AppState>((set, get) => ({
 	totalMessages: 0,
 	messageLimit: 10,
 	messageLimitExceededModalOpen: false,
+	showAuthPrompt: false,
 
 	createChat: async (name?: string) => {
 		try {
@@ -342,5 +345,9 @@ export const useStore = create<AppState>((set, get) => ({
 
 	setMessageLimitExceededModalOpen: (isOpen: boolean) => {
 		set({ messageLimitExceededModalOpen: isOpen });
+	},
+
+	setShowAuthPrompt: (isOpen: boolean) => {
+		set({ showAuthPrompt: isOpen });
 	},
 }));

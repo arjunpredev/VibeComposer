@@ -1,11 +1,13 @@
 import { SignIn, SignUp } from "@clerk/clerk-react";
 import { dark } from "@clerk/themes";
 import { useAuth } from "@clerk/clerk-react";
+import { useStore } from "~/store/useStore";
 
 export function AuthSignInModal() {
 	const { isSignedIn, isLoaded } = useAuth();
+	const { showAuthPrompt, setShowAuthPrompt } = useStore();
 
-	if (isSignedIn) {
+	if (isSignedIn || !showAuthPrompt) {
 		return null;
 	}
 
@@ -30,22 +32,27 @@ export function AuthSignInModal() {
 	};
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center bg-black/95 z-50 p-4">
-			{isLoaded ? (
-				isSignInMode ? (
-					<SignIn
-						appearance={appearanceConfig}
-						signUpUrl="/?signin=false"
-						redirectUrl="/"
-					/>
-				) : (
-					<SignUp
-						appearance={appearanceConfig}
-						signInUrl="/?signin=true"
-						redirectUrl="/"
-					/>
-				)
-			) : null}
+		<div
+			className="fixed inset-0 flex items-center justify-center bg-black/95 z-50 p-4"
+			onClick={() => setShowAuthPrompt(false)}
+		>
+			<div onClick={(e) => e.stopPropagation()}>
+				{isLoaded ? (
+					isSignInMode ? (
+						<SignIn
+							appearance={appearanceConfig}
+							signUpUrl="/?signin=false"
+							redirectUrl="/"
+						/>
+					) : (
+						<SignUp
+							appearance={appearanceConfig}
+							signInUrl="/?signin=true"
+							redirectUrl="/"
+						/>
+					)
+				) : null}
+			</div>
 		</div>
 	);
 }
