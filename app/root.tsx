@@ -106,10 +106,12 @@ function Root() {
 		};
 	}, []);
 
-	const publishableKey = (import.meta as any).env.VITE_CLERK_PUBLISHABLE_KEY || (import.meta as any).env.CLERK_PUBLISHABLE_KEY;
+	const publishableKey = (import.meta as any).env.CLERK_PUBLISHABLE_KEY;
 
 	if (!publishableKey) {
-		throw new Error("Missing Clerk Publishable Key. Please set VITE_CLERK_PUBLISHABLE_KEY or CLERK_PUBLISHABLE_KEY environment variable.");
+		throw new Error(
+			"Missing Clerk Publishable Key. Please set VITE_CLERK_PUBLISHABLE_KEY or CLERK_PUBLISHABLE_KEY environment variable."
+		);
 	}
 
 	return (

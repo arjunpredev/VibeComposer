@@ -24,6 +24,7 @@ This project was built using [**pre.dev**](https://pre.dev), an AI Solutions Arc
 - 💾 **Persistent Storage** — Your API key and chat history stay in your browser
 - 🎨 **Terminal Aesthetic** — Clean, minimal black/white theme with monospace typography
 - 🚀 **Real-Time Streaming** — Watch AI responses appear live
+- 🔐 **User Authentication** — Secure sign-in with Clerk
 
 ## 🚀 Quick Start
 
@@ -31,6 +32,25 @@ This project was built using [**pre.dev**](https://pre.dev), an AI Solutions Arc
 
 - **Node.js** v18 or higher
 - **Anthropic API Key** — [Get one free](https://console.anthropic.com/)
+- **Clerk Account** — [Sign up at clerk.com](https://clerk.com/)
+
+### Environment Variables
+
+Create a `.env.local` file in the project root with the following variables:
+
+```env
+# Clerk (REQUIRED) - Used for user authentication and session management
+CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_key_here
+```
+
+**How to get these keys:**
+
+1. **Clerk Publishable Key** (Required)
+   - Go to [clerk.com](https://clerk.com/) and sign up or log in
+   - Create a new application
+   - Navigate to the **API Keys** section in your dashboard
+   - Copy your **Publishable Key** (starts with `pk_`)
+   - Set as either `VITE_CLERK_PUBLISHABLE_KEY` (recommended for Vite) or `CLERK_PUBLISHABLE_KEY`
 
 ### Installation
 
@@ -55,10 +75,11 @@ npm run preview
 
 ## 📖 How to Use
 
-1. **Add Your API Key** — Paste your Anthropic API key at the top of the app
-2. **Chat with AI** — Describe the music you want (e.g., *"Create a drum pattern in C minor"*)
-3. **Apply Code** — Click *"Apply to Strudel"* to load the generated code
-4. **Play** — Press play or Ctrl+Enter in the Strudel REPL to hear your creation
+1. **Sign In** — Create or sign in with your Clerk account
+2. **Add Your API Key** — Paste your Anthropic API key at the top of the app (if not set in environment)
+3. **Chat with AI** — Describe the music you want (e.g., *"Create a drum pattern in C minor"*)
+4. **Apply Code** — Click *"Apply to Strudel"* to load the generated code
+5. **Play** — Press play or Ctrl+Enter in the Strudel REPL to hear your creation
 
 ## 🛠️ Tech Stack
 
@@ -69,12 +90,15 @@ npm run preview
 | **UI Library** | React 19 |
 | **Styling** | Tailwind CSS v4 |
 | **State** | Zustand |
+| **Authentication** | Clerk |
 | **AI** | Anthropic Claude API |
 | **Music** | Strudel (CDN) |
 
 ## 🔒 Security
 
-Your API key is stored **only in your browser's localStorage** and is never sent anywhere except directly to Anthropic's API. No server, no tracking—just you and your music.
+- Your API key is stored **only in your browser's localStorage** and is never sent anywhere except directly to Anthropic's API
+- User authentication is handled securely by **Clerk**
+- No server storage, no tracking—just you and your music
 
 ## 🙏 Acknowledgments
 
