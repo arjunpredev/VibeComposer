@@ -34,6 +34,7 @@ interface AppState {
 	isAuthLoading: boolean;
 	totalMessages: number;
 	messageLimit: number;
+	userId: string | null;
 	createChat: (name?: string) => Promise<void>;
 	deleteChat: (chatId: string) => Promise<void>;
 	renameChat: (chatId: string, newName: string) => Promise<void>;
@@ -50,6 +51,7 @@ interface AppState {
 	setCurrentExampleIndex: (index: number) => void;
 	setSignInModalOpen: (isOpen: boolean) => void;
 	setAuthLoading: (isLoading: boolean) => void;
+	setUserId: (userId: string | null) => void;
 	loadChats: (userId: string) => Promise<void>;
 	getCurrentChatMessages: () => Message[];
 	getMessageStats: () => {
@@ -110,15 +112,16 @@ export const useStore = create<AppState>((set, get) => ({
 	messageLimit: 10,
 	messageLimitExceededModalOpen: false,
 	showAuthPrompt: false,
+	userId: null,
 
 	createChat: async (name?: string) => {
 		try {
-			const userId = (window as any).__clerkUserId;
+			const state = get();
 			const response = await fetch("/api/chats", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					userId,
+					userId: state.userId,
 					name: name || `Chat ${new Date().toLocaleDateString()}`,
 				}),
 			});
@@ -142,11 +145,11 @@ export const useStore = create<AppState>((set, get) => ({
 
 	deleteChat: async (chatId: string) => {
 		try {
-			const userId = (window as any).__clerkUserId;
+			const state = get();
 			const response = await fetch("/api/chats", {
 				method: "DELETE",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ chatId, userId }),
+				body: JSON.stringify({ chatId, userId: state.userId }),
 			});
 
 			if (!response.ok) {
@@ -173,11 +176,11 @@ export const useStore = create<AppState>((set, get) => ({
 	renameChat: async (chatId: string, newName: string) => {
 		if (!newName.trim()) return;
 		try {
-			const userId = (window as any).__clerkUserId;
+			const state = get();
 			const response = await fetch("/api/chats", {
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ chatId, newName, userId }),
+				body: JSON.stringify({ chatId, newName, userId: state.userId }),
 			});
 
 			if (!response.ok) {
@@ -321,6 +324,10 @@ export const useStore = create<AppState>((set, get) => ({
 
 	setAuthLoading: (isLoading: boolean) => {
 		set({ isAuthLoading: isLoading });
+	},
+
+	setUserId: (userId: string | null) => {
+		set({ userId });
 	},
 
 	loadChats: async (userId: string) => {

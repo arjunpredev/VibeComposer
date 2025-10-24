@@ -17,7 +17,7 @@ export default function Index() {
 
 	useEffect(() => {
 		trackEvent("app: page viewed");
-	}, [trackEvent]);
+	}, []);
 
 	const handleHeaderClick = () => {
 		setShowingExamples(true);

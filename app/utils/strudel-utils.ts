@@ -1,3 +1,40 @@
+import * as seline from "@seline-analytics/web";
+
+export function initSeline(token: string): void {
+	if (!token) {
+		console.warn("[Seline] Token not provided, analytics disabled");
+		return;
+	}
+	try {
+		seline.init({
+			token,
+			autoPageView: true,
+			cookie: true,
+		});
+		console.log("[Seline] Analytics initialized successfully");
+	} catch (error) {
+		console.error("[Seline] Failed to initialize:", error);
+	}
+}
+
+export function setSelineUser(userData: {
+	userId: string;
+	email?: string;
+	name?: string;
+	[key: string]: unknown;
+}): void {
+	try {
+		const { userId, ...restData } = userData;
+		seline.setUser({
+			userId,
+			...restData,
+		});
+		console.log("[Seline] User identified:", userId);
+	} catch (error) {
+		console.error("[Seline] Failed to set user:", error);
+	}
+}
+
 export function cleanStrudelCode(code: string): string {
 	let cleanCode = code.trim();
 	if (cleanCode.startsWith("```")) {
@@ -10,20 +47,11 @@ export function trackEvent(
 	eventName: string,
 	eventData?: Record<string, unknown>
 ): void {
-	const seline = (
-		window as unknown as {
-			seline?: {
-				track?: (name: string, data?: Record<string, unknown>) => void;
-			};
-		}
-	).seline;
-
-	if (seline?.track) {
-		try {
-			seline.track(eventName, eventData);
-		} catch (error) {
-			console.debug(`Failed to track event "${eventName}":`, error);
-		}
+	try {
+		seline.track(eventName, eventData);
+		console.log(`[Seline] Tracked event: "${eventName}"`, eventData);
+	} catch (error) {
+		console.error(`[Seline] Failed to track event "${eventName}":`, error);
 	}
 }
 

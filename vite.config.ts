@@ -8,6 +8,7 @@ export default defineConfig({
 		"import.meta.env.CLERK_PUBLISHABLE_KEY": JSON.stringify(
 			process.env.CLERK_PUBLISHABLE_KEY
 		),
+		"import.meta.env.SELINE_TOKEN": JSON.stringify(process.env.SELINE_TOKEN),
 	},
 	server: {
 		host: "0.0.0.0",

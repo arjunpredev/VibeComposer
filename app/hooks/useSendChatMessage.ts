@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useStore } from "~/store/useStore";
 import { cleanStrudelCode } from "~/utils/strudel-utils";
 import { useTrackEvent } from "~/hooks/useTrackEvent";
+import { useAuth } from "@clerk/clerk-react";
 
 export function useSendChatMessage() {
 	const { trackEvent } = useTrackEvent();
@@ -19,6 +20,8 @@ export function useSendChatMessage() {
 		setMessageLimitExceededModalOpen,
 		setChatInput,
 	} = useStore();
+
+	const { userId } = useAuth();
 
 	const sendMessage = useCallback(
 		async (content: string) => {
@@ -57,7 +60,6 @@ export function useSendChatMessage() {
 			});
 
 			try {
-				const userId = (window as any).__clerkUserId;
 				const response = await fetch("/api/chat/message", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },

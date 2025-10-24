@@ -8,9 +8,10 @@ import {
 	useSearchParams,
 } from "react-router";
 import type { LinksFunction, MetaFunction } from "react-router";
-import { ClerkProvider, useAuth } from "@clerk/clerk-react";
+import { ClerkProvider, useAuth, useUser } from "@clerk/clerk-react";
 import { useStore } from "~/store/useStore";
 import { useTrackEvent } from "~/hooks/useTrackEvent";
+import { initSeline, setSelineUser } from "~/utils/strudel-utils";
 import indexCss from "~/styles/index.css?url";
 
 export const meta: MetaFunction = () => {
@@ -94,18 +95,24 @@ export const links: LinksFunction = () => [
 ];
 
 function RootContent() {
-	const { loadChats, setActiveChat } = useStore();
+	const { loadChats, setActiveChat, setUserId } = useStore();
 	const { userId, isSignedIn, isLoaded } = useAuth();
+	const { user } = useUser();
 	const [searchParams] = useSearchParams();
 	const { trackEvent } = useTrackEvent();
 
 	useEffect(() => {
 		if (isLoaded && isSignedIn && userId) {
+			setUserId(userId);
 			loadChats(userId);
-			(window as any).__clerkUserId = userId;
+			setSelineUser({
+				userId,
+				email: user?.emailAddresses?.[0]?.emailAddress,
+				name: user?.fullName || user?.username || undefined,
+			});
 			trackEvent("user: signed in");
 		}
-	}, [isLoaded, isSignedIn, userId]);
+	}, [isLoaded, isSignedIn, userId, user]);
 
 	// Load chat from URL param if present
 	useEffect(() => {
@@ -127,6 +134,13 @@ function RootContent() {
 				document.body.removeChild(script);
 			}
 		};
+	}, []);
+
+	useEffect(() => {
+		const selineToken = (import.meta as any).env.SELINE_TOKEN;
+		if (selineToken) {
+			initSeline(selineToken);
+		}
 	}, []);
 
 	return <Outlet />;
