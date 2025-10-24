@@ -3,6 +3,7 @@ import { StrudelRepl } from "./StrudelRepl";
 import { Chat } from "./Chat";
 import { ExamplesModal } from "./examples-modal";
 import { ChatsSidebar } from "./chats-sidebar";
+import { RecordingButton } from "./recording-button";
 import { useStore } from "~/store/useStore";
 
 export function DesktopLayout() {
@@ -25,7 +26,6 @@ export function DesktopLayout() {
 		<div className="hidden md:flex flex-1 overflow-hidden min-h-0">
 			<div className="w-1/2 border-r border-white/20 flex flex-col min-h-0">
 				<div className="border-b border-white/20 px-4 py-2 flex items-center justify-between flex-shrink-0 h-10">
-					<span className="text-sm text-white/70">STRUDEL REPL</span>
 					<div className="flex gap-2 items-center">
 						<button
 							onClick={() => setShowExamplesModal(true)}
@@ -41,6 +41,7 @@ export function DesktopLayout() {
 						>
 							Learn more
 						</a>
+						<RecordingButton />
 					</div>
 				</div>
 				<div className="flex-1 min-h-0">

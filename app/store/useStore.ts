@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 import { trackEvent } from "~/utils/strudel-utils";
 
-interface Message {
+export interface Message {
 	role: "user" | "assistant";
 	content: string;
 	timestamp: number;
@@ -10,7 +10,7 @@ interface Message {
 	outputTokens?: number;
 }
 
-interface Chat {
+export interface Chat {
 	_id?: string;
 	id?: string;
 	userId?: string;
@@ -18,6 +18,14 @@ interface Chat {
 	messages: Message[];
 	createdAt: number;
 	updatedAt: number;
+}
+
+export interface Recording {
+	id: string;
+	blob: Blob;
+	duration: number;
+	timestamp: number;
+	saved: boolean;
 }
 
 interface AppState {
@@ -63,6 +71,17 @@ interface AppState {
 	setMessageLimitExceededModalOpen: (isOpen: boolean) => void;
 	showAuthPrompt: boolean;
 	setShowAuthPrompt: (isOpen: boolean) => void;
+	// Recording state
+	isRecording: boolean;
+	recordingDuration: number;
+	currentRecording: Recording | null;
+	savedRecordings: Recording[];
+	startRecording: () => void;
+	stopRecording: () => void;
+	setRecordingBlob: (blob: Blob, duration: number) => void;
+	saveRecording: () => Promise<void>;
+	discardRecording: () => void;
+	setRecordingDuration: (duration: number) => void;
 }
 
 const STORAGE_KEY_CODE = "vibe-composer-strudel-code";
@@ -113,6 +132,10 @@ export const useStore = create<AppState>((set, get) => ({
 	messageLimitExceededModalOpen: false,
 	showAuthPrompt: false,
 	userId: null,
+	isRecording: false,
+	recordingDuration: 0,
+	currentRecording: null,
+	savedRecordings: [],
 
 	createChat: async (name?: string) => {
 		try {
@@ -356,5 +379,58 @@ export const useStore = create<AppState>((set, get) => ({
 
 	setShowAuthPrompt: (isOpen: boolean) => {
 		set({ showAuthPrompt: isOpen });
+	},
+
+	startRecording: () => {
+		set({ isRecording: true, recordingDuration: 0 });
+		trackEvent("recording_started");
+	},
+
+	stopRecording: () => {
+		set({ isRecording: false });
+		trackEvent("recording_stopped");
+	},
+
+	setRecordingBlob: (blob: Blob, duration: number) => {
+		const newRecording: Recording = {
+			id: uuidv4(),
+			blob,
+			duration,
+			timestamp: Date.now(),
+			saved: false,
+		};
+		set({ currentRecording: newRecording, recordingDuration: duration });
+	},
+
+	saveRecording: async () => {
+		const state = get();
+		if (!state.currentRecording) return;
+
+		try {
+			set((prevState) => ({
+				savedRecordings: [
+					...prevState.savedRecordings,
+					{ ...prevState.currentRecording!, saved: true },
+				],
+				currentRecording: null,
+				recordingDuration: 0,
+			}));
+			trackEvent("recording_saved", {
+				duration: state.currentRecording.duration,
+			});
+		} catch (error) {
+			console.error("Error saving recording:", error);
+			trackEvent("recording_save_failed", { error: String(error) });
+			throw error;
+		}
+	},
+
+	discardRecording: () => {
+		set({ currentRecording: null, recordingDuration: 0 });
+		trackEvent("recording_discarded");
+	},
+
+	setRecordingDuration: (duration: number) => {
+		set({ recordingDuration: duration });
 	},
 }));
